@@ -10,3 +10,4 @@ This is is just a heads-up.
 
 ## Usage
 Open `README.md` in VS Code, edit, preview, and save.
+Solo temporal
