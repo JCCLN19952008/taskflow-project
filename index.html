@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskFlow-Planner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+  <h1>Planner</P></h1>
+</header>
+
+<main>
+
+  <!-- Formulario para ir añadiendo las tareas -->
+  <section class="taskform-section">
+
+    <form id="taskform">
+
+      <label for="task-input">Cual sera la tarea?</label>
+
+      <input
+        type="text"
+        id="task-input"
+        name="task"
+        placeholder="Describe la tarea"
+        required
+      >
+
+      <button type="submit">Añadir la tarea</button>
+
+    </form>
+
+  </section>
+
+
+  <!-- Lista de las tareas que van siendo añadidas -->
+  <section class="tasklist-section">
+
+    <ul id="tasklist"></ul>
+
+  </section>
+
+</main>
+
+
+<!-- Panel que mostrara las estadisticas segun tareas se completen o añadan -->
+<aside>
+
+  <h2>Estadisticas de tus tareas</h2>
+
+  <ul>
+
+    <li>Total de tareas: <span id="total-tasks">0</span></li>
+
+    <li>Tareas completadas: <span id="completed-tasks">0</span></li>
+
+    <li>Tareas pendientes: <span id="pending-tasks">0</span></li>
+
+  </ul>
+
+</aside>
+
+
+<footer>
+
+  <p>TaskFlow-Planner : Aplicación de gestión de tareas cotidianas</p>
+
+</footer>
+
+
+<!-- Template para cada tarea -->
+<template id="task-template">
+
+  <li class="task-item">
+
+    <input type="checkbox" class="task-checkbox">
+
+    <span class="task-title"></span>
+
+    <button class="delete-task">Borrar</button>
+
+  </li>
+
+</template>
+
+
+<script src=>app.js</script>
+
+</body>
+</html>

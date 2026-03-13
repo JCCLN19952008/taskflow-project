@@ -10,4 +10,5 @@ This is is just a heads-up.
 
 ## Usage
 Open `README.md` in VS Code, edit, preview, and save.
-Solo temporal
+
+Actualizado a dia 13 de Marzo con estructura basica de HTML, CSS y Javascript
