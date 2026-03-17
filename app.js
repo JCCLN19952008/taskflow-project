@@ -53,7 +53,11 @@ function createTask(title, category = "personal", date = null) {
 
 function renderTasks() {
   taskList.innerHTML = "";
-
+  
+if (filtered.length === 0) {
+  taskList.innerHTML = "<p class='empty'>No hay tareas aún</p>";
+  return;
+}
   let filtered = tasks;
 
   if (currentFilter === "completed") {
@@ -104,6 +108,9 @@ if (task.date) {
 //-Filtro de tareas
 document.querySelectorAll("[data-filter]").forEach(btn => {
   btn.addEventListener("click", () => {
+    document.querySelectorAll("[data-filter]").forEach(b => b.classList.remove("active-filter"));
+    btn.classList.add("active-filter");
+
     currentFilter = btn.dataset.filter;
     renderTasks();
   });
@@ -134,6 +141,7 @@ saveTaskBtn.addEventListener("click", () => {
 
 //Funcionalidad de estadisticas
 function updateStats() {
+  document.getElementById("task-count").textContent = `${tasks.length} tareas`;
   const total = tasks.length;
   const completed = tasks.filter(t => t.completed).length;
   const pending = total - completed;

@@ -36,9 +36,22 @@ header {
   text-align: center;
   margin-bottom: 20px;
 }
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-header span {
+  font-size: 14px;
+  opacity: 0.6;
+}
 
 header h1 {
   font-size: 2.5rem;
+  font-size: 32px;
+  letter-spacing: 4px;
+  margin-bottom: 10px;
 }
 
 /* Aspecto principal de la landing page */
@@ -55,6 +68,8 @@ main {
   padding: 16px;
   border-radius: 12px;
   border: 1px solid #ddd;
+  margin-bottom: 20px;
+
 }
 
 /* Aspecto del formulario */
@@ -96,12 +111,30 @@ filters {
   gap: 8px;
   align-items: center;
 }
+.filter-group button {
+  background: #444;
+}
 
+.filter-group button:hover {
+  background: #222;
+}
+.active-filter {
+  background: #000 !important;
+}
 /* Lista de tareas */
 
 .task-list {
   list-style: none;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.empty {
+  text-align: center;
+  opacity: 0.6;
+  padding: 20px;
 }
 
 /* Task item */
@@ -167,6 +200,9 @@ filters {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
+}
+.stats {
+  text-align: center;
 }
 
 /* Progress bar */
