@@ -22,7 +22,7 @@
 
 body {
   font-family: Arial, sans-serif;
-  max-width: 800px;
+  max-width: 700px;
   margin: auto;
   padding: 20px;
   background: #f5f5f5;
@@ -69,7 +69,7 @@ main {
   border-radius: 12px;
   border: 1px solid #ddd;
   margin-bottom: 20px;
-
+box-shadow: 0 2px 6px rgba(0,0,0,0.05)
 }
 
 /* Aspecto del formulario */
@@ -77,6 +77,7 @@ main {
 .task-form {
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
 #task-input {
@@ -84,6 +85,7 @@ main {
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
+  background: white;
 }
 
 button {
@@ -129,12 +131,22 @@ filters {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-top: 10px;
+}
+.card h2 {
+  margin-bottom: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05)
+}
+.empty-state {
+  text-align: center;
+  padding: 30px 10px;
+  opacity: 0.6;
 }
 
-.empty {
-  text-align: center;
-  opacity: 0.6;
-  padding: 20px;
+.empty-state small {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
 }
 
 /* Task item */
@@ -152,6 +164,16 @@ filters {
 
 .task-item:hover {
   transform: scale(1.01);
+  background: #f0f0f0;
+}
+.task-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.task-meta {
+  font-size: 12px;
+  opacity: 0.6;
 }
 
 /* Title */
@@ -191,10 +213,7 @@ filters {
   background: #e5e7eb;
 }
 
-
-
 /* Panel que muestra la estadisticas de las tareas  */
-
 
 .stats-grid {
   display: flex;
@@ -203,6 +222,7 @@ filters {
 }
 .stats {
   text-align: center;
+  opacity: 0.9;
 }
 
 /* Progress bar */

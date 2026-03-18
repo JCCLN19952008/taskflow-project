@@ -55,7 +55,12 @@ function renderTasks() {
   taskList.innerHTML = "";
   
 if (filtered.length === 0) {
-  taskList.innerHTML = "<p class='empty'>No hay tareas aún</p>";
+  taskList.innerHTML = 
+    <div class="empty-state">
+      <p>No tienes tareas aún</p>
+      <small>Añade una nueva tarea para comenzar</small>
+    </div>
+  ;
   return;
 }
   let filtered = tasks;
@@ -71,6 +76,7 @@ if (filtered.length === 0) {
 
     const checkbox = clone.querySelector(".task-checkbox");
     const title = clone.querySelector(".task-title");
+    const meta = clone.querySelector(".task-meta")
     const deleteBtn = clone.querySelector(".delete-task");
 
     
@@ -80,7 +86,15 @@ if (filtered.length === 0) {
     ${task.category}
   </span>
 `;
+title.textContent = task.title;
 
+let metaText = task.category;
+
+if (task.date) {
+  metaText += ` - ${task.date}`;
+}
+
+meta.textContent = metaText;
 if (task.date) {
   title.innerHTML += ` - ${task.date}`;
 }
