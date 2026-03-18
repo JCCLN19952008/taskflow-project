@@ -52,15 +52,19 @@ function createTask(title, category = "personal", date = null) {
 // Renderizar las  tareas creadas
 
 function renderTasks() {
-  
-  let filtered = tasks;
+  taskList.innerHTML = "";
 
+  // 1. START from real state
+  let filtered = [...tasks];
+
+  // 2. APPLY filter FIRST
   if (currentFilter === "completed") {
-    filtered = tasks.filter(t => t.completed);
+    filtered = filtered.filter(t => t.completed);
   } else if (currentFilter === "pending") {
-    filtered = tasks.filter(t => !t.completed);
+    filtered = filtered.filter(t => !t.completed);
   }
 
+  // 3. HANDLE EMPTY STATE AFTER filtering
   if (filtered.length === 0) {
     taskList.innerHTML = `
       <div class="empty-state">
@@ -72,6 +76,7 @@ function renderTasks() {
     return;
   }
 
+  // 4. RENDER CLEANLY
   filtered.forEach(task => {
     const clone = taskTemplate.content.cloneNode(true);
 
@@ -80,7 +85,6 @@ function renderTasks() {
     const meta = clone.querySelector(".task-meta");
     const deleteBtn = clone.querySelector(".delete-task");
 
-    
     title.textContent = task.title;
 
     let metaText = task.category;
@@ -94,7 +98,7 @@ function renderTasks() {
     checkbox.addEventListener("change", () => {
       task.completed = checkbox.checked;
       saveTasks();
-      updateStats();
+      renderTasks();
     });
 
     deleteBtn.addEventListener("click", () => {
