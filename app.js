@@ -12,6 +12,9 @@ const modal = document.getElementById("taskModal");
 const openModalBtn = document.getElementById("openModal");
 const closeModalBtn = document.getElementById("closeModal");
 const saveTaskBtn = document.getElementById("saveTask");
+modal.addEventListener("animationend", () => {
+  modal.classList.remove("highlight");
+});
 
 const modalTitle = document.getElementById("modalTaskTitle");
 const modalCategory = document.getElementById("modalTaskCategory");
@@ -37,14 +40,23 @@ function loadTasks() {
 // Crear tarea
 function createTask(title, category = "personal", date = null) {
 
-  // 🔴 Check duplicates
   const exists = tasks.some(t =>
     t.title.toLowerCase() === title.toLowerCase() &&
-    t.date === date
+    (!t.date || t.date === date)
   );
 
-  if (exists) {
-    alert("Esta tarea ya existe");
+  // 🔴 If duplicate WITHOUT date → open modal instead
+  if (exists && !date) {
+     document.getElementById("modalHint").textContent =
+    "Esta tarea ya existe. Selecciona una fecha diferente.";
+    modal.classList.remove("hidden");
+
+  modal.classList.add("highlight");
+
+    // Pre-fill modal
+    modalTitle.value = title;
+    modalCategory.value = category;
+
     return;
   }
 
@@ -149,6 +161,7 @@ openModalBtn.addEventListener("click", (e) => {
 
 closeModalBtn.addEventListener("click", () => {
   modal.classList.add("hidden");
+  document.getElementById("modalHint").textContent = "";
 });
 
 saveTaskBtn.addEventListener("click", () => {
@@ -158,8 +171,10 @@ saveTaskBtn.addEventListener("click", () => {
   createTask(title, modalCategory.value, modalDate.value);
 
   modal.classList.add("hidden");
+
   modalTitle.value = "";
   modalDate.value = "";
+  document.getElementById("modalHint").textContent = ""; 
 });
 
 
