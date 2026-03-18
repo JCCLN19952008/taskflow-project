@@ -36,6 +36,18 @@ function loadTasks() {
 
 // Crear tarea
 function createTask(title, category = "personal", date = null) {
+
+  // 🔴 Check duplicates
+  const exists = tasks.some(t =>
+    t.title.toLowerCase() === title.toLowerCase() &&
+    t.date === date
+  );
+
+  if (exists) {
+    alert("Esta tarea ya existe");
+    return;
+  }
+
   const task = {
     id: Date.now(),
     title,
@@ -101,11 +113,15 @@ function renderTasks() {
       renderTasks();
     });
 
-    deleteBtn.addEventListener("click", () => {
-      tasks = tasks.filter(t => t.id !== task.id);
-      saveTasks();
-      renderTasks();
-    });
+  deleteBtn.addEventListener("click", () => {
+  const confirmDelete = confirm("¿Quieres eliminar esta tarea?");
+
+  if (!confirmDelete) return;
+
+  tasks = tasks.filter(t => t.id !== task.id);
+  saveTasks();
+  renderTasks();
+});
 
     taskList.appendChild(clone);
   });
