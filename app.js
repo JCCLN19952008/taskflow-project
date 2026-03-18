@@ -52,17 +52,7 @@ function createTask(title, category = "personal", date = null) {
 // Renderizar las  tareas creadas
 
 function renderTasks() {
-  taskList.innerHTML = "";
   
-if (filtered.length === 0) {
-  taskList.innerHTML = 
-    <div class="empty-state">
-      <p>No tienes tareas aún</p>
-      <small>Añade una nueva tarea para comenzar</small>
-    </div>
-  ;
-  return;
-}
   let filtered = tasks;
 
   if (currentFilter === "completed") {
@@ -71,33 +61,33 @@ if (filtered.length === 0) {
     filtered = tasks.filter(t => !t.completed);
   }
 
+  if (filtered.length === 0) {
+    taskList.innerHTML = `
+      <div class="empty-state">
+        <p>No tienes tareas aún</p>
+        <small>Añade una nueva tarea para comenzar</small>
+      </div>
+    `;
+    updateStats();
+    return;
+  }
+
   filtered.forEach(task => {
     const clone = taskTemplate.content.cloneNode(true);
 
     const checkbox = clone.querySelector(".task-checkbox");
     const title = clone.querySelector(".task-title");
-    const meta = clone.querySelector(".task-meta")
+    const meta = clone.querySelector(".task-meta");
     const deleteBtn = clone.querySelector(".delete-task");
 
     
-   title.innerHTML = `
-  ${task.title}
-  <span class="category ${task.category}">
-    ${task.category}
-  </span>
-`;
-title.textContent = task.title;
+    title.textContent = task.title;
 
-let metaText = task.category;
-
-if (task.date) {
-  metaText += ` - ${task.date}`;
-}
-
-meta.textContent = metaText;
-if (task.date) {
-  title.innerHTML += ` - ${task.date}`;
-}
+    let metaText = task.category;
+    if (task.date) {
+      metaText += ` - ${task.date}`;
+    }
+    meta.textContent = metaText;
 
     checkbox.checked = task.completed;
 
