@@ -50,6 +50,10 @@ header {
   justify-content: space-between;
   align-items: center;
 }
+.section-title span {
+  color: #222;
+  font-weight: 600;
+}
 
 .section-header span {
   font-size: 14px;
@@ -123,6 +127,11 @@ button:hover {
   gap: 8px;
   align-items: center;
 }
+.filter-group span {
+color: #222;
+font-weight: 600;
+}
+
 .filter-group button {
   background: #444;
 }
@@ -179,11 +188,14 @@ button:hover {
 .task-content {
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .task-meta {
   font-size: 12px;
   opacity: 0.6;
+  margin-top: 2px;
+  text-transform: capitalize;
 }
 
 /* Title */
@@ -194,7 +206,12 @@ button:hover {
 /* Completed task */
 .task-checkbox:checked + .task-content .task-title {
   text-decoration: line-through;
-  opacity: 0.7;
+  text-decoration-thickness: 2px;
+  text-decoration-color: #333;
+  opacity: 0.8;
+}
+.task-checkbox:checked + .task-content .task-meta {
+  color: #777;
 }
 
 /* Delete button */
