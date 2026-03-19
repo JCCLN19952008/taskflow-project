@@ -22,10 +22,8 @@
 
 body {
   font-family: Arial, sans-serif;
-  max-width: 700px;
-  margin: auto;
   padding: 20px;
-  background: #f8f6f3;
+  background: #f1ede7;
   color: #111;
 }
 
@@ -286,4 +284,13 @@ footer {
 @keyframes pop {
   0% { transform: scale(0.95); }
   100% { transform: scale(1); }
+}
+.app-container {
+  max-width: 700px;
+  margin: 40px auto; 
+  background: #fdfaf6; 
+  padding: 25px;
+  border-radius: 20px;
+  border: 1px solid #eee;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
