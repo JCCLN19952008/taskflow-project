@@ -201,8 +201,8 @@ font-weight: 600;
 /* Title */
 .task-title {
   flex: 1;
-  color: #0f172a;
-  font-weight: 500;
+  color: #141414;
+  font-weight: 650;
 }
 
 /* Completed task */
