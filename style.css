@@ -51,7 +51,7 @@ header {
   align-items: center;
 }
 .section-title span {
-  color: #222;
+  color: #141414;
   font-weight: 600;
 }
 
@@ -201,6 +201,8 @@ font-weight: 600;
 /* Title */
 .task-title {
   flex: 1;
+  color: #0f172a;
+  font-weight: 500;
 }
 
 /* Completed task */
