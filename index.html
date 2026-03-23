@@ -4,14 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TaskFlow-Planner</title>
-  <link rel="stylesheet" href="dist/output.css">
+  <link rel="stylesheet" href="./dist/output.css">
   <link rel="stylesheet" href="style.css">
+  
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
 
-<div class="app-container"> 
+<div class="app-container max-w-xl mx-auto"> 
 <header class="border-t-2 border-b-2 border-black py-6 mb-8 relative">
 <div class="relative flex items-center justify-center w-full">
 <h1 class="title">
@@ -58,9 +59,7 @@
 </h2>
   <span id="task-count"></span>
 </div>
-<div class="bg-red-500 text-white p-2">
-  Tailwind is working
-</div>
+
 <ul id="tasks" class="task-list"></ul>
 
   <!-- 🔹 STATS -->
@@ -70,6 +69,7 @@
       <div>Total: <span id="total-tasks">0</span></div>
       <div>Completadas: <span id="completed-tasks">0</span></div>
       <div>Pendientes: <span id="pending-tasks">0</span></div>
+      
     </div>
 
     <!-- Progress bar -->
