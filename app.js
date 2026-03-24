@@ -209,14 +209,13 @@ taskForm.addEventListener("submit", (e) => {
 });
 
 const darkToggle = document.getElementById("darkModeToggle");
-const darkIcon = document.getElementById("darkIcon");
 
-function updateIcon() {
-  const isDark = document.body.classList.contains("dark-mode");
+function setIcon(isDark) {
+  darkToggle.innerHTML = isDark
+    ? '<i data-lucide="sun"></i>'
+    : '<i data-lucide="moon"></i>';
 
-  darkIcon.setAttribute("data-lucide", isDark ? "sun" : "moon");
-
-  lucide.createIcons(); // 🔥 re-render icon
+  lucide.createIcons();
 }
 
 darkToggle.addEventListener("click", () => {
@@ -225,7 +224,7 @@ darkToggle.addEventListener("click", () => {
   const isDark = document.body.classList.contains("dark-mode");
   localStorage.setItem("darkMode", isDark);
 
-  updateIcon();
+  setIcon(isDark);
 });
 
 // Load saved mode
@@ -235,7 +234,8 @@ if (savedMode === "true") {
   document.body.classList.add("dark-mode");
 }
 
-updateIcon();
+// Set correct icon on load
+setIcon(document.body.classList.contains("dark-mode"));
 
 loadTasks();
 renderTasks();   

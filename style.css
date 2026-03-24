@@ -351,9 +351,9 @@ footer {
 }
 .dark-toggle i {
   position: absolute;
-  top: -5px;
+  top: 12px;
   right: 20px;
-
+transform : none;
   background: #333;
   color: white;
   border: none;
@@ -361,7 +361,7 @@ footer {
   padding: 4px 8px;
   cursor: pointer;
   font-size: 12px;
-
+  z-index:10;
   transition: all 0.2s ease;
 }
 
