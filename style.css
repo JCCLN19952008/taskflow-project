@@ -352,7 +352,7 @@ footer {
 .dark-toggle  {
   position: absolute ;
 
-  top: 80px;
+  top: 0px;
   right: 20px;
 
   display: flex;
