@@ -31,9 +31,14 @@ function saveTasks() {
 }
 
 function loadTasks() {
-  const data = localStorage.getItem("tasks");
-  if (data) {
-    tasks = JSON.parse(data);
+  try {
+    const data = localStorage.getItem("tasks");
+    if (data) {
+      tasks = JSON.parse(data);
+    }
+  } catch (e) {
+    console.error("Error loading tasks:", e);
+    tasks = [];
   }
 }
 
@@ -202,6 +207,29 @@ taskForm.addEventListener("submit", (e) => {
   createTask(title);
   taskInput.value = "";
 });
+
+
+const darkToggle = document.getElementById("darkModeToggle");
+
+darkToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+
+  const isDark = document.body.classList.contains("dark-mode");
+  localStorage.setItem("darkMode", isDark);
+
+  darkToggle.textContent = isDark ? "☀️" : "🌙";
+});
+
+// Load saved mode
+const savedMode = localStorage.getItem("darkMode");
+
+if (savedMode === "true") {
+  document.body.classList.add("dark-mode");
+}
+
+// Set correct icon on load
+darkToggle.textContent =
+  document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
 
 loadTasks();
 renderTasks();   
