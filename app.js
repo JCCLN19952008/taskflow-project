@@ -208,8 +208,16 @@ taskForm.addEventListener("submit", (e) => {
   taskInput.value = "";
 });
 
-
 const darkToggle = document.getElementById("darkModeToggle");
+const darkIcon = document.getElementById("darkIcon");
+
+function updateIcon() {
+  const isDark = document.body.classList.contains("dark-mode");
+
+  darkIcon.setAttribute("data-lucide", isDark ? "sun" : "moon");
+
+  lucide.createIcons(); // 🔥 re-render icon
+}
 
 darkToggle.addEventListener("click", () => {
   document.body.classList.toggle("dark-mode");
@@ -217,7 +225,7 @@ darkToggle.addEventListener("click", () => {
   const isDark = document.body.classList.contains("dark-mode");
   localStorage.setItem("darkMode", isDark);
 
-  darkToggle.textContent = isDark ? "☀️" : "🌙";
+  updateIcon();
 });
 
 // Load saved mode
@@ -227,9 +235,7 @@ if (savedMode === "true") {
   document.body.classList.add("dark-mode");
 }
 
-// Set correct icon on load
-darkToggle.textContent =
-  document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
+updateIcon();
 
 loadTasks();
 renderTasks();   
