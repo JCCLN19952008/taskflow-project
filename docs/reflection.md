@@ -1,0 +1,1 @@
+En este archivo se recopilaran las explicaciones planteadas y argumentadas por los asistentes de IA para algunas de las "enquiries" plantaadas por el usuario.

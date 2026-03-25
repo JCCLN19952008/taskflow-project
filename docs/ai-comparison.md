@@ -1,0 +1,1 @@
+Este archivo sera usado para recopilar la comparacion entre la ayuda prestadad por mas de un asistente de IA

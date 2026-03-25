@@ -1,0 +1,1 @@
+Este archivo sera utilizado para recopilar lo obtenido mediante el uso del asistente Cursor.

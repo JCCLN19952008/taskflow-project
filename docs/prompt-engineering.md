@@ -1,0 +1,1 @@
+En este archivo se recopilaran algunos de los prompts usados para obtener las respuestas otorgadas por los asistentes de IA usados
