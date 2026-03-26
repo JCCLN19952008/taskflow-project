@@ -1,4 +1,4 @@
-# Comparación entre asistentes
+# Comparación entre asistentes en cuanto a respuestas
 
 ##  Primeros prompts y respuestas
 
@@ -777,3 +777,532 @@ fetch("/api/user/preferences", {
 // and works on any browser, any computer, anywhere in the world
 ```
 The pattern you'll notice across all four is that the concept and the code are really just the same idea expressed in two different languages — once the analogy clicked, the code is just spelling it out formally. Let me know if any of these you'd like to push further!
+
+# Comparacion entre asistentes en cuanto a deteccion de errores en codigo
+
+## Prompts de funciones erroneas a  Chat-GPT Go(GPT 5.3)
+
+**Primera Funcion Erronea**
+```JS
+First JS function :
+const taskList = document.getElementById("tasks");
+let tasks = {};
+function saveTasks() {
+  localStorage.saveItem("tasks", json.stringify(tasks)); 
+}
+```
+**Segunda funcion erronea**
+```JS
+const taskList = document.getElementById("tasks");
+let tasks = [];
+function loadTasks() { 
+  try {
+    const data = localStorage.getItem("tasks");
+    if (data) {
+      tasks = json.parse(data); 
+    }
+  } catch (error) { 
+    console.error("Error loading tasks:", e);
+    tasks = {}; 
+  }
+}
+```
+**Tercera funcion erronea**
+```JS
+const taskList = document.getElementById("tasks");
+let tasks = [];
+function createTask(title, category = "personal", date = null) {
+
+  const exists = tasks.some(tasks => 
+    tasks.title.toLowerCase() === tasks.title.toLowerCase() && 
+    (!tasks.date || tasks.date === date) 
+  );
+```
+## Respuesta a las  funciones erroneas por Chat-GPT Go(GPT 5.3)
+
+**Primera Funcion Corregida**
+```JS
+const taskList = document.getElementById("tasks");
+let tasks = [];
+
+function saveTasks() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+```
+Insight
+This is a syntax + API misuse error
+Common causes:
+case sensitivity (JSON)
+remembering exact Web API names (setItem)
+
+**Segunda funcion Corregida**
+```JS
+const taskList = document.getElementById("tasks");
+let tasks = [];
+
+function loadTasks() {
+  try {
+    const data = localStorage.getItem("tasks");
+
+    if (data) {
+      tasks = JSON.parse(data);
+    }
+  } catch (error) {
+    console.error("Error loading tasks:", error);
+    tasks = [];
+  }
+}
+```
+Insight
+This is a mix of:
+✔ syntax errors (JSON)
+✔ runtime error (wrong variable name)
+✔ data consistency issue
+
+The important one:
+Data type consistency is critical (array vs object)
+
+**Tercera funcion Corregida**
+```JS
+function createTask(title, category = "personal", date = null) {
+
+  const exists = tasks.some(task =>
+    task.title.toLowerCase() === title.toLowerCase() &&
+    (!task.date || task.date === date)
+  );
+
+```
+Insight
+This is a logic error (not syntax)
+
+Harder to detect because:
+code runs fine
+but behavior is wrong
+
+Important concept here
+Variable shadowing
+Bad:
+```JS
+tasks.some(tasks => ...)
+```
+Good:
+```JS
+tasks.some(task => ...)
+```
+
+## Prompts de funcines erroneas a  Claude Sonnet (4.6 Extended: Free Tier)
+
+**Primera Funcion Erronea**
+```JS
+First JS function :
+const taskList = document.getElementById("tasks");
+let tasks = {};
+function saveTasks() {
+  localStorage.saveItem("tasks", json.stringify(tasks)); 
+}
+```
+**Segunda funcion erronea**
+```JS
+const taskList = document.getElementById("tasks");
+let tasks = [];
+function loadTasks() { 
+  try {
+    const data = localStorage.getItem("tasks");
+    if (data) {
+      tasks = json.parse(data); 
+    }
+  } catch (error) { 
+    console.error("Error loading tasks:", e);
+    tasks = {}; 
+  }
+}
+```
+**Tercera funcion erronea**
+```JS
+const taskList = document.getElementById("tasks");
+let tasks = [];
+function createTask(title, category = "personal", date = null) {
+
+  const exists = tasks.some(tasks => 
+    tasks.title.toLowerCase() === tasks.title.toLowerCase() && 
+    (!tasks.date || tasks.date === date) 
+  );
+```
+## Respuesta a las  funciones erroneas por Claude Sonnet (4.6 Extended: Free Tier)
+
+**Primera Funcion Corregida**
+```JS
+let tasks = []; // consistent with the other functions
+
+function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(tasks)); // setItem, JSON uppercase
+}
+```
+Bug 1 — localStorage.saveItem doesn't exist
+The correct method is localStorage.setItem. This would throw a TypeError at runtime and nothing would ever get saved.
+Bug 2 — json.stringify wrong casing
+JavaScript is case-sensitive. The built-in object is JSON (all caps). json would be undefined, throwing a ReferenceError.
+Bug 3 — tasks initialised as {} (object) instead of [] (array)
+Functions 2 and 3 both treat tasks as an array. This inconsistency would cause subtle bugs when trying to use array methods like .some() or .push() on what is actually an object.
+
+**Segunda funcion Corregida**
+```JS
+function loadTasks() {
+    try {
+        const data = localStorage.getItem("tasks");
+        if (data) {
+            tasks = JSON.parse(data); // JSON uppercase
+        }
+    } catch (error) {
+        console.error("Error loading tasks:", error); // consistent naming
+        tasks = []; // reset to empty array, not object
+    }
+}
+```
+Bug 1 — json.parse wrong casing again
+Same issue as Function 1 — needs to be JSON.parse.
+Bug 2 — catch parameter mismatch
+The catch block names the error error but then references it as e. This would throw a ReferenceError inside your error handler, which is a particularly nasty bug because it silently masks the original problem.
+Bug 3 — resetting to {} instead of [] in the catch block
+If loading fails, tasks gets reset to an object instead of an empty array, which would break any array methods used later.
+
+**Tercera funcion Corregida**
+```JS
+function createTask(title, category = "personal", date = null) {
+    // 'task' is singular - represents one item from the array
+    const exists = tasks.some(task =>
+        task.title.toLowerCase() === title.toLowerCase() // compare task's title to the PARAMETER
+        && (!task.date || task.date === date)
+    );
+
+    if (exists) {
+        console.warn("A task with this title already exists on this date.");
+        return; // stop here, don't add a duplicate
+    }
+
+    // Actually create and store the new task
+    const newTask = {
+        id: Date.now(), // simple unique id
+        title,
+        category,
+        date,
+        completed: false
+    };
+
+    tasks.push(newTask);
+    saveTasks(); // persist to localStorage immediately
+}
+```
+Bug 1 — variable shadowing in .some() callback
+The callback parameter is named tasks, which shadows the outer tasks array. Inside the callback you can no longer reference the array at all. The callback parameter should be a single item, conventionally named task (singular).
+Bug 2 — comparing a task's title to itself
+Because of Bug 1, both sides of the comparison refer to the same callback parameter tasks. So you're literally checking tasks.title === tasks.title which is always true — meaning every task would appear to already exist and nothing could ever be added. The left side should compare against the incoming title parameter.
+Bug 3 — the function is incomplete
+It checks for duplicates but never actually creates a task object or adds it to the array.
+
+# Comparacion entre asistentes en cuanto a generacion de codigo simple para funciones
+
+## Prompt de funciones requeridas a  Chat-GPT Go(GPT 5.3)
+
+Next i will explain to you in pretty simple natural language three easy features that i would like you to generate in rather simple code , the features will be in natural language so the code will be pretty self-contained all things considered.
+The set of functions i want you to generate in code that may involve implementing a feature in and all task planner apps are : 
+
+1.A function that does not allow to create a task if the date that task is supposed to be done is set on a weekend. 
+
+2.A function that deletes a previous task automatically if that new task is due to be done the same week and carries the same name . 
+
+3.A function that does not allow a task to be saved persistently if there is any syntax error in the way the task was written(normal english) and is not capitalized.
+
+## Generacion de funciones requeridas a  Chat-GPT Go(GPT 5.3)
+
+**Primera Funcion**
+Block Weekend Dates
+```JS
+function isWeekend(dateString) {
+  const date = new Date(dateString);
+
+  if (isNaN(date)) return true; // invalid date → treat as invalid
+
+  const day = date.getDay(); // 0 = Sunday, 6 = Saturday
+  return day === 0 || day === 6;
+}
+```
+
+```JS
+if (isWeekend("2026-03-28")) {
+  console.log("Cannot create task on weekend");
+}
+```
+
+**Segunda Funcion**
+Remove duplicate task in same week
+```JS
+function removeDuplicateTask(tasks, newTask) {
+  const getWeek = (date) => {
+    const d = new Date(date);
+    const firstDay = new Date(d.getFullYear(), 0, 1);
+    const pastDays = (d - firstDay) / 86400000;
+    return Math.ceil((pastDays + firstDay.getDay() + 1) / 7);
+  };
+
+  return tasks.filter(task => {
+    const sameTitle = task.title.toLowerCase() === newTask.title.toLowerCase();
+    const sameWeek = getWeek(task.date) === getWeek(newTask.date);
+
+    return !(sameTitle && sameWeek);
+  });
+}
+```
+```JS
+tasks = removeDuplicateTask(tasks, newTask);
+tasks.push(newTask);
+```
+
+**Tercera Funcion**
+Validate Task test
+```JS
+function isValidTaskText(title) {
+  if (!title || typeof title !== "string") return false;
+
+  const trimmed = title.trim();
+
+  // Must start with capital letter
+  if (!/^[A-Z]/.test(trimmed)) return false;
+
+  // Only allow letters, spaces, and basic punctuation
+  if (!/^[A-Za-z\s.,!?'-]+$/.test(trimmed)) return false;
+
+  return true;
+}
+```
+```JS
+if (!isValidTaskText("comer")) {
+  console.log("Invalid task format");
+}
+```
+Subtle points you can comment on
+Function 1:
+Relies on correct date parsing (Date object pitfalls)
+
+Function 2:
+Week calculation can vary (ISO vs JS week)
+
+Function 3:
+“Syntax error” in natural language is approximated (regex limitation)
+
+Final takeaway
+All three functions are:
+✔ standalone
+✔ reusable
+✔ minimal dependencies
+✔ realistic for your app
+
+## Prompt de funciones requeridas a  Claude Sonnet (4.6 Extended: Free Tier)
+
+Next i will explain to you in pretty simple natural language three easy features that i would like you to generate in rather simple code , the features will be in natural language so the code will be pretty self-contained all things considered.
+The set of functions i want you to generate in code that may involve implementing a feature in and all task planner apps are : 
+
+1.A function that does not allow to create a task if the date that task is supposed to be done is set on a weekend. 
+
+2.A function that deletes a previous task automatically if that new task is due to be done the same week and carries the same name . 
+
+3.A function that does not allow a task to be saved persistently if there is any syntax error in the way the task was written(normal english) and is not capitalized.
+
+## Generacion de funciones requeridas a  Claude Sonnet (4.6 Extended: Free Tier)
+
+Great set of features — they're all realistic, practical additions to any task planner. Let me build each one cleanly with clear comments so you can see the reasoning behind every step.
+
+**Primera Funcion**
+Block weekend dates
+```JS
+function isWeekend(date) {
+    const taskDate = new Date(date);
+
+    // Sunday = 0, Monday = 1 ... Saturday = 6
+    const dayOfWeek = taskDate.getDay();
+
+    // Returns true if the day is Saturday or Sunday
+    return dayOfWeek === 0 || dayOfWeek === 6;
+}
+
+function createTask(title, category = "personal", date = null) {
+
+    // If a date was provided, check whether it falls on a weekend
+    if (date && isWeekend(date)) {
+        console.warn("Task rejected: cannot schedule a task on a weekend.");
+        return null; // stop here, don't create anything
+    }
+
+    const newTask = {
+        id: Date.now(),
+        title,
+        category,
+        date,
+        completed: false
+    };
+
+    tasks.push(newTask);
+    saveTasks();
+    return newTask;
+}
+```
+What's happening: getDay() returns a number 0-6 representing the day of the week. We just check if it lands on 0 (Sunday) or 6 (Saturday) and block it if so. Clean and simple.
+
+**Segunda Funcion**
+Auto-delete same week duplicate
+```JS
+// Helper that figures out which week number a date falls in
+function getWeekNumber(date) {
+    const taskDate = new Date(date);
+
+    // We anchor to the 4th of January because that's always in week 1
+    const startOfYear = new Date(taskDate.getFullYear(), 0, 1);
+
+    // Calculate how many full weeks have passed since the start of the year
+    const weekNumber = Math.ceil(
+        ((taskDate - startOfYear) / (24 * 60 * 60 * 1000) + startOfYear.getDay() + 1) / 7
+    );
+
+    return weekNumber;
+}
+
+function createTask(title, category = "personal", date = null) {
+
+    if (date && isWeekend(date)) {
+        console.warn("Task rejected: cannot schedule a task on a weekend.");
+        return null;
+    }
+
+    // If the new task has a date, check for a same-week task with the same name
+    if (date) {
+        const newTaskWeek = getWeekNumber(date);
+        const newTaskYear = new Date(date).getFullYear(); // account for year too
+
+        // Find the index of any existing task that matches on both name and week
+        const duplicateIndex = tasks.findIndex(task =>
+            task.title.toLowerCase() === title.toLowerCase() &&
+            task.date &&
+            getWeekNumber(task.date) === newTaskWeek &&
+            new Date(task.date).getFullYear() === newTaskYear
+        );
+
+        // If we found one, remove it before adding the new version
+        if (duplicateIndex !== -1) {
+            console.log(`Replacing existing task "${title}" from the same week.`);
+            tasks.splice(duplicateIndex, 1); // removes 1 item at that index
+        }
+    }
+
+    const newTask = {
+        id: Date.now(),
+        title,
+        category,
+        date,
+        completed: false
+    };
+
+    tasks.push(newTask);
+    saveTasks();
+    return newTask;
+}
+```
+What's happening: We calculate the week number for both the new task and any existing task with the same name. If they match, splice() removes the old one from the array before the new one gets added. We also check the year so week 1 of 2025 doesn't clash with week 1 of 2026.
+
+**Tercera Funcion**
+Validate english syntax and capitalization
+```JS
+function isValidTaskTitle(title) {
+    const errors = [];
+
+    // Rule 1: Must start with a capital letter
+    if (!/^[A-Z]/.test(title)) {
+        errors.push("Task must start with a capital letter.");
+    }
+
+    // Rule 2: No double spaces anywhere in the title
+    if (/\s{2,}/.test(title)) {
+        errors.push("Task title contains double spaces.");
+    }
+
+    // Rule 3: No leading or trailing spaces
+    if (title !== title.trim()) {
+        errors.push("Task title has leading or trailing spaces.");
+    }
+
+    // Rule 4: Must contain at least one actual word (no numbers/symbols only)
+    if (!/[a-zA-Z]{2,}/.test(title)) {
+        errors.push("Task title must contain real words.");
+    }
+
+    // Rule 5: No weird repeated punctuation like !! or ??
+    if (/[!?,\.]{2,}/.test(title)) {
+        errors.push("Task title contains repeated punctuation.");
+    }
+
+    // Returns an object so you know both whether it passed AND why it failed
+    return {
+        valid: errors.length === 0,
+        errors
+    };
+}
+
+function saveTasks() {
+    // Validate every task title before saving anything to localStorage
+    for (const task of tasks) {
+        const validation = isValidTaskTitle(task.title);
+
+        if (!validation.valid) {
+            console.error(`Task "${task.title}" failed validation:`, validation.errors);
+            return; // abort the save entirely if any task fails
+        }
+    }
+
+    // All tasks passed — safe to save
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+```
+What's happening: Each rule uses a regex (regular expression) to check a specific pattern. Rather than just returning true/false, the function collects all the reasons something failed and returns them together — that way you can surface useful messages to the user rather than just a generic "invalid" response. The save is aborted entirely if any task fails, so nothing malformed ever reaches localStorage.
+
+How They All Fit Together
+```JS
+// This is how a complete task creation flow looks with all three features active
+
+function createTask(title, category = "personal", date = null) {
+
+    // Gate 1 - validate the title before anything else
+    const validation = isValidTaskTitle(title);
+    if (!validation.valid) {
+        console.warn("Task rejected due to title issues:", validation.errors);
+        return null;
+    }
+
+    // Gate 2 - block weekend dates
+    if (date && isWeekend(date)) {
+        console.warn("Task rejected: cannot schedule on a weekend.");
+        return null;
+    }
+
+    // Gate 3 - replace same-week duplicate if one exists
+    if (date) {
+        const newTaskWeek = getWeekNumber(date);
+        const newTaskYear = new Date(date).getFullYear();
+
+        const duplicateIndex = tasks.findIndex(task =>
+            task.title.toLowerCase() === title.toLowerCase() &&
+            task.date &&
+            getWeekNumber(task.date) === newTaskWeek &&
+            new Date(task.date).getFullYear() === newTaskYear
+        );
+
+        if (duplicateIndex !== -1) {
+            tasks.splice(duplicateIndex, 1);
+        }
+    }
+
+    const newTask = { id: Date.now(), title, category, date, completed: false };
+    tasks.push(newTask);
+    saveTasks();
+    return newTask;
+}
+```
+The three gates sit neatly in sequence — validate the title, validate the date, handle duplicates, then and only then create and save. Let me know if you'd like any of these adjusted or pushed further!
