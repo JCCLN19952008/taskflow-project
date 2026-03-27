@@ -1,26 +1,31 @@
 // Manipular elementos del DOM
 
-const taskForm = document.getElementById("taskform");
-const taskInput = document.getElementById("task-input");
-const taskList = document.getElementById("tasks");
+const els = {
+  taskForm: document.getElementById("taskform"),
+  taskInput: document.getElementById("task-input"),
+  taskList: document.getElementById("tasks"),
 
-const totalTasks = document.getElementById("total-tasks");
-const completedTasks = document.getElementById("completed-tasks");
-const pendingTasks = document.getElementById("pending-tasks");
+  totalTasks: document.getElementById("total-tasks"),
+  completedTasks: document.getElementById("completed-tasks"),
+  pendingTasks: document.getElementById("pending-tasks"),
+  taskCount: document.getElementById("task-count"),
 
-const modal = document.getElementById("taskModal");
-const openModalBtn = document.getElementById("openModal");
-const closeModalBtn = document.getElementById("closeModal");
-const saveTaskBtn = document.getElementById("saveTask");
-modal.addEventListener("animationend", () => {
-  modal.classList.remove("highlight");
+  modal: document.getElementById("taskModal"),
+  openModalBtn: document.getElementById("openModal"),
+  closeModalBtn: document.getElementById("closeModal"),
+  saveTaskBtn: document.getElementById("saveTask"),
+  modalHint: document.getElementById("modalHint"),
+  modalTitle: document.getElementById("modalTaskTitle"),
+  modalCategory: document.getElementById("modalTaskCategory"),
+  modalDate: document.getElementById("modalTaskDate"),
+
+  taskTemplate: document.getElementById("task-template"),
+  darkToggle: document.getElementById("darkModeToggle"),
+};
+
+els.modal.addEventListener("animationend", () => {
+  els.modal.classList.remove("highlight");
 });
-
-const modalTitle = document.getElementById("modalTaskTitle");
-const modalCategory = document.getElementById("modalTaskCategory");
-const modalDate = document.getElementById("modalTaskDate");
-
-const taskTemplate = document.getElementById("task-template");
 
 let tasks = [];
 let currentFilter = "all"
@@ -52,15 +57,15 @@ function createTask(title, category = "personal", date = null) {
 
   // 🔴 If duplicate WITHOUT date → open modal instead
   if (exists && !date) {
-     document.getElementById("modalHint").textContent =
+    els.modalHint.textContent =
     "Esta tarea ya existe. Selecciona una fecha diferente.";
-    modal.classList.remove("hidden");
+    els.modal.classList.remove("hidden");
 
-  modal.classList.add("highlight");
+    els.modal.classList.add("highlight");
 
     // Pre-fill modal
-    modalTitle.value = title;
-    modalCategory.value = category;
+    els.modalTitle.value = title;
+    els.modalCategory.value = category;
 
     return;
   }
@@ -81,7 +86,7 @@ function createTask(title, category = "personal", date = null) {
 // Renderizar las  tareas creadas
 
 function renderTasks() {
-  taskList.innerHTML = "";
+  els.taskList.innerHTML = "";
 
   // 1. START from real state
   let filtered = [...tasks];
@@ -95,7 +100,7 @@ function renderTasks() {
 
   // 3. HANDLE EMPTY STATE AFTER filtering
   if (filtered.length === 0) {
-    taskList.innerHTML = `
+    els.taskList.innerHTML = `
       <div class="empty-state">
         <p>No tienes tareas aún</p>
         <small>Añade una nueva tarea para comenzar</small>
@@ -107,7 +112,7 @@ function renderTasks() {
 
   // 4. RENDER CLEANLY
   filtered.forEach(task => {
-    const clone = taskTemplate.content.cloneNode(true);
+    const clone = els.taskTemplate.content.cloneNode(true);
 
     const checkbox = clone.querySelector(".task-checkbox");
     const title = clone.querySelector(".task-title");
@@ -140,7 +145,7 @@ function renderTasks() {
   renderTasks();
 });
 
-    taskList.appendChild(clone);
+    els.taskList.appendChild(clone);
   });
 
   updateStats();
@@ -159,66 +164,64 @@ document.querySelectorAll("[data-filter]").forEach(btn => {
 
 //Aplicacion de la clase Modal
 
-openModalBtn.addEventListener("click", (e) => {
+els.openModalBtn.addEventListener("click", (e) => {
   e.preventDefault();
-  modal.classList.remove("hidden");
+  els.modal.classList.remove("hidden");
 });
 
-closeModalBtn.addEventListener("click", () => {
-  modal.classList.add("hidden");
-  document.getElementById("modalHint").textContent = "";
+els.closeModalBtn.addEventListener("click", () => {
+  els.modal.classList.add("hidden");
+  els.modalHint.textContent = "";
 });
 
-saveTaskBtn.addEventListener("click", () => {
-  const title = modalTitle.value.trim();
+els.saveTaskBtn.addEventListener("click", () => {
+  const title = els.modalTitle.value.trim();
   if (!title) return;
 
-  createTask(title, modalCategory.value, modalDate.value);
+  createTask(title, els.modalCategory.value, els.modalDate.value);
 
-  modal.classList.add("hidden");
+  els.modal.classList.add("hidden");
 
-  modalTitle.value = "";
-  modalDate.value = "";
-  document.getElementById("modalHint").textContent = ""; 
+  els.modalTitle.value = "";
+  els.modalDate.value = "";
+  els.modalHint.textContent = ""; 
 });
 
 
 //Funcionalidad de estadisticas
 function updateStats() {
-  document.getElementById("task-count").textContent = `${tasks.length} tareas`;
+  els.taskCount.textContent = `${tasks.length} tareas`;
   const total = tasks.length;
   const completed = tasks.filter(t => t.completed).length;
   const pending = total - completed;
 
-  totalTasks.textContent = total;
-  completedTasks.textContent = completed;
-  pendingTasks.textContent = pending;
+  els.totalTasks.textContent = total;
+  els.completedTasks.textContent = completed;
+  els.pendingTasks.textContent = pending;
 }
 
 
 //Formulario
 
-taskForm.addEventListener("submit", (e) => {
+els.taskForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  const title = taskInput.value.trim();
+  const title = els.taskInput.value.trim();
   if (!title) return;
 
   createTask(title);
-  taskInput.value = "";
+  els.taskInput.value = "";
 });
 
-const darkToggle = document.getElementById("darkModeToggle");
-
 function setIcon(isDark) {
-  darkToggle.innerHTML = isDark
+  els.darkToggle.innerHTML = isDark
     ? '<i data-lucide="sun"></i>'
     : '<i data-lucide="moon"></i>';
 
   lucide.createIcons();
 }
 
-darkToggle.addEventListener("click", () => {
+els.darkToggle.addEventListener("click", () => {
   document.body.classList.toggle("dark-mode");
 
   const isDark = document.body.classList.contains("dark-mode");
