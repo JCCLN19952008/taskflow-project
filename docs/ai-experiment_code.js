@@ -78,9 +78,6 @@ function createTask(title, category = "personal", date = null) {
 
 
 
-// Renderizar las  tareas creadas
-
-function purgeTasks(){ }
 
 
 // Renderizar las  tareas creadas
