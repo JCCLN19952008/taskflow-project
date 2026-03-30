@@ -1,3 +1,16 @@
+// Classic bootstrap for local `file://` usage.
+// Modular logic lives in `src/js/*` and attaches to `window.TaskFlow`.
+
+(function () {
+  window.TaskFlow = window.TaskFlow || {};
+
+  if (typeof window.TaskFlow.init === "function") {
+    window.TaskFlow.init();
+  } else {
+    console.warn("TaskFlow: init() not found on window.TaskFlow.");
+  }
+})();
+
 // TaskFlow Planner - classic script bundle for file:// compatibility.
 // This avoids ES module loading issues (CORS/origin 'null') when opening index.html locally.
 

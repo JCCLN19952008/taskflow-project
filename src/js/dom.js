@@ -2,7 +2,8 @@
  * Centralized DOM references so the rest of the code doesn't repeat selectors.
  * Keys are kept stable to avoid breaking the logic modules.
  */
-export const els = {
+window.TaskFlow = window.TaskFlow || {};
+window.TaskFlow.els = {
   taskForm: document.getElementById("taskform"),
   taskInput: document.getElementById("task-input"),
   taskList: document.getElementById("tasks"),

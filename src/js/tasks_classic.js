@@ -1,20 +1,50 @@
-import { els } from "./dom.js";
-import { state } from "./state.js";
-import { saveTasks } from "./storage.js";
+/**
+ * Task operations: create, render, delete, and stats updates.
+ *
+ * Classic script (no ESM `export/import`) so it can run with `file://`.
+ */
+
+window.TaskFlow = window.TaskFlow || {};
+
+const els = window.TaskFlow.els;
+const state = window.TaskFlow.state;
+const saveTasks = window.TaskFlow.saveTasks;
+
+let pendingDeleteId = null;
+
+const confirmDeleteAvailable = Boolean(
+  els &&
+    els.confirmDeleteModal &&
+    els.confirmDeleteText &&
+    els.confirmDeleteCancelBtn &&
+    els.confirmDeleteOkBtn
+);
 
 /**
- * Create a new task (or open the details modal for duplicates without a date).
- *
+ * Show validation feedback.
+ * If the details modal is open, write into it; otherwise fall back to alert().
+ * @param {string} message
+ */
+function showUserError(message) {
+  if (els && els.modal && !els.modal.classList.contains("hidden")) {
+    els.modalHint.textContent = message;
+    els.modal.classList.add("highlight");
+    return;
+  }
+  alert(message);
+}
+
+/**
+ * Create a new task.
  * @param {string} title
  * @param {string} [category]
  * @param {string|null} [date]
- * @returns {boolean} `true` if the task was created, otherwise `false`.
+ * @returns {boolean}
  */
-export function createTask(title, category = "personal", date = null) {
+function createTask(title, category = "personal", date = null) {
   const normalizedTitle = String(title || "").trim();
   const normalizedDate = date ? date : null; // "" -> null
 
-  // Basic title validation for better UX.
   if (normalizedTitle.length < 3) {
     showUserError("El título debe tener al menos 3 caracteres.");
     return false;
@@ -24,9 +54,10 @@ export function createTask(title, category = "personal", date = null) {
     return false;
   }
 
-  // Require date for "Trabajo" category.
+  // Require date for "trabajo".
   if (category === "trabajo" && !normalizedDate) {
-    els.modalHint.textContent = "Las tareas de Trabajo requieren una fecha.";
+    els.modalHint.textContent =
+      "Las tareas de Trabajo requieren una fecha.";
     els.modal.classList.remove("hidden");
     els.modal.classList.add("highlight");
     els.modalTitle.value = normalizedTitle;
@@ -41,60 +72,59 @@ export function createTask(title, category = "personal", date = null) {
       (!t.date || t.date === normalizedDate)
   );
 
-  // If duplicate WITHOUT date -> open modal instead.
+  // Duplicate without date -> open modal instead.
   if (exists && !normalizedDate) {
     els.modalHint.textContent =
       "Esta tarea ya existe. Selecciona una fecha diferente.";
     els.modal.classList.remove("hidden");
     els.modal.classList.add("highlight");
-
     els.modalTitle.value = normalizedTitle;
     els.modalCategory.value = category;
     els.modalDate.value = "";
     return false;
   }
 
-  const task = {
+  state.tasks.push({
     id: Date.now(),
     title: normalizedTitle,
     category,
     date: normalizedDate,
     completed: false,
-  };
+  });
 
-  state.tasks.push(task);
   saveTasks();
   renderTasks();
   return true;
 }
 
 /**
- * Update counters in the stats section based on current `state.tasks`.
+ * Update stats counters.
  * @returns {void}
  */
-export function updateStats() {
-  els.taskCount.textContent = `${state.tasks.length} tareas`;
+function updateStats() {
+  if (!els || !els.taskCount) return;
 
+  els.taskCount.textContent = `${state.tasks.length} tareas`;
   const total = state.tasks.length;
   const completed = state.tasks.filter((t) => t.completed).length;
   const pending = total - completed;
 
-  els.totalTasks.textContent = total;
-  els.completedTasks.textContent = completed;
-  els.pendingTasks.textContent = pending;
+  if (els.totalTasks) els.totalTasks.textContent = total;
+  if (els.completedTasks) els.completedTasks.textContent = completed;
+  if (els.pendingTasks) els.pendingTasks.textContent = pending;
 }
 
 /**
- * Re-render the task list based on the current filter (`state.currentFilter`).
+ * Render task list.
  * @returns {void}
  */
-export function renderTasks() {
+function renderTasks() {
   els.taskList.innerHTML = "";
 
   const filtered = state.tasks.filter((task) => {
     if (state.currentFilter === "completed") return task.completed;
     if (state.currentFilter === "pending") return !task.completed;
-    return true; // "all"
+    return true; // all
   });
 
   if (filtered.length === 0) {
@@ -120,7 +150,6 @@ export function renderTasks() {
 
     title.textContent = task.title;
     meta.textContent = `${task.category}${task.date ? ` - ${task.date}` : ""}`;
-
     checkbox.checked = task.completed;
 
     checkbox.addEventListener("change", () => {
@@ -140,7 +169,6 @@ export function renderTasks() {
       }
 
       if (!confirmDeleteAvailable) {
-        // Fallback for pages that don't have the custom confirm modal markup.
         const ok = window.confirm(
           `¿Eliminar la tarea "${task.title}"${
             task.date ? ` (fecha: ${task.date})` : ""
@@ -169,26 +197,7 @@ export function renderTasks() {
   updateStats();
 }
 
-let pendingDeleteId = null;
-const confirmDeleteAvailable =
-  Boolean(
-    els.confirmDeleteModal &&
-      els.confirmDeleteText &&
-      els.confirmDeleteCancelBtn &&
-      els.confirmDeleteOkBtn
-  );
-
-function showUserError(message) {
-  // If the details modal is visible, show feedback in the modal.
-  if (els.modal && !els.modal.classList.contains("hidden")) {
-    els.modalHint.textContent = message;
-    els.modal.classList.add("highlight");
-    return;
-  }
-  alert(message);
-}
-
-// Wire confirm-delete modal once for the whole module (if it exists in the HTML).
+// Confirm-delete modal wiring.
 if (confirmDeleteAvailable) {
   els.confirmDeleteCancelBtn.addEventListener("click", () => {
     pendingDeleteId = null;
@@ -206,4 +215,9 @@ if (confirmDeleteAvailable) {
     renderTasks();
   });
 }
+
+// Expose functions to the rest of the app.
+window.TaskFlow.createTask = createTask;
+window.TaskFlow.updateStats = updateStats;
+window.TaskFlow.renderTasks = renderTasks;
 
