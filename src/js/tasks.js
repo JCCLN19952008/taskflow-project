@@ -8,38 +8,64 @@ import { saveTasks } from "./storage.js";
  * @param {string} title
  * @param {string} [category]
  * @param {string|null} [date]
- * @returns {void}
+ * @returns {boolean} `true` if the task was created, otherwise `false`.
  */
 export function createTask(title, category = "personal", date = null) {
+  const normalizedTitle = String(title || "").trim();
+  const normalizedDate = date ? date : null; // "" -> null
+
+  // Basic title validation for better UX.
+  if (normalizedTitle.length < 3) {
+    showUserError("El título debe tener al menos 3 caracteres.");
+    return false;
+  }
+  if (normalizedTitle.length > 60) {
+    showUserError("El título no puede superar los 60 caracteres.");
+    return false;
+  }
+
+  // Require date for "Trabajo" category.
+  if (category === "trabajo" && !normalizedDate) {
+    els.modalHint.textContent = "Las tareas de Trabajo requieren una fecha.";
+    els.modal.classList.remove("hidden");
+    els.modal.classList.add("highlight");
+    els.modalTitle.value = normalizedTitle;
+    els.modalCategory.value = category;
+    els.modalDate.value = "";
+    return false;
+  }
+
   const exists = state.tasks.some(
     (t) =>
-      t.title.toLowerCase() === title.toLowerCase() &&
-      (!t.date || t.date === date)
+      t.title.toLowerCase() === normalizedTitle.toLowerCase() &&
+      (!t.date || t.date === normalizedDate)
   );
 
   // If duplicate WITHOUT date -> open modal instead.
-  if (exists && !date) {
+  if (exists && !normalizedDate) {
     els.modalHint.textContent =
       "Esta tarea ya existe. Selecciona una fecha diferente.";
     els.modal.classList.remove("hidden");
     els.modal.classList.add("highlight");
 
-    els.modalTitle.value = title;
+    els.modalTitle.value = normalizedTitle;
     els.modalCategory.value = category;
-    return;
+    els.modalDate.value = "";
+    return false;
   }
 
   const task = {
     id: Date.now(),
-    title,
+    title: normalizedTitle,
     category,
-    date,
+    date: normalizedDate,
     completed: false,
   };
 
   state.tasks.push(task);
   saveTasks();
   renderTasks();
+  return true;
 }
 
 /**
@@ -104,12 +130,19 @@ export function renderTasks() {
     });
 
     deleteBtn.addEventListener("click", () => {
-      const confirmDelete = confirm("¿Quieres eliminar esta tarea?");
-      if (!confirmDelete) return;
+      const needsConfirmation = Boolean(task.date) || Boolean(task.completed);
 
-      state.tasks = state.tasks.filter((t) => t.id !== task.id);
-      saveTasks();
-      renderTasks();
+      if (!needsConfirmation) {
+        state.tasks = state.tasks.filter((t) => t.id !== task.id);
+        saveTasks();
+        renderTasks();
+        return;
+      }
+
+      pendingDeleteId = task.id;
+      els.confirmDeleteText.textContent =
+        `¿Eliminar la tarea "${task.title}"${task.date ? ` (fecha: ${task.date})` : ""}?`;
+      els.confirmDeleteModal.classList.remove("hidden");
     });
 
     fragment.appendChild(clone);
@@ -118,4 +151,33 @@ export function renderTasks() {
   els.taskList.appendChild(fragment);
   updateStats();
 }
+
+let pendingDeleteId = null;
+
+function showUserError(message) {
+  // If the details modal is visible, show feedback in the modal.
+  if (els.modal && !els.modal.classList.contains("hidden")) {
+    els.modalHint.textContent = message;
+    els.modal.classList.add("highlight");
+    return;
+  }
+  alert(message);
+}
+
+// Wire confirm-delete modal once for the whole module.
+els.confirmDeleteCancelBtn.addEventListener("click", () => {
+  pendingDeleteId = null;
+  els.confirmDeleteModal.classList.add("hidden");
+});
+
+els.confirmDeleteOkBtn.addEventListener("click", () => {
+  if (pendingDeleteId == null) return;
+
+  state.tasks = state.tasks.filter((t) => t.id !== pendingDeleteId);
+  pendingDeleteId = null;
+  els.confirmDeleteModal.classList.add("hidden");
+
+  saveTasks();
+  renderTasks();
+});
 

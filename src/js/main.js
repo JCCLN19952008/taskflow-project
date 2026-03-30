@@ -41,7 +41,8 @@ els.saveTaskBtn.addEventListener("click", () => {
   const title = els.modalTitle.value.trim();
   if (!title) return;
 
-  createTask(title, els.modalCategory.value, els.modalDate.value);
+  const created = createTask(title, els.modalCategory.value, els.modalDate.value);
+  if (!created) return;
 
   els.modal.classList.add("hidden");
   els.modalTitle.value = "";
@@ -56,8 +57,10 @@ els.taskForm.addEventListener("submit", (e) => {
   const title = els.taskInput.value.trim();
   if (!title) return;
 
-  createTask(title);
-  els.taskInput.value = "";
+  const created = createTask(title);
+  if (created) {
+    els.taskInput.value = "";
+  }
 });
 
 function setIcon(isDark) {

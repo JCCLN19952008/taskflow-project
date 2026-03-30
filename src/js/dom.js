@@ -21,6 +21,11 @@ export const els = {
   modalCategory: document.getElementById("modalTaskCategory"),
   modalDate: document.getElementById("modalTaskDate"),
 
+  confirmDeleteModal: document.getElementById("confirmDeleteModal"),
+  confirmDeleteText: document.getElementById("confirmDeleteText"),
+  confirmDeleteCancelBtn: document.getElementById("confirmDeleteCancel"),
+  confirmDeleteOkBtn: document.getElementById("confirmDeleteOk"),
+
   taskTemplate: document.getElementById("task-template"),
   darkToggle: document.getElementById("darkModeToggle"),
 };
