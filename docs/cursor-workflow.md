@@ -314,3 +314,72 @@ Normalize modal date value: modalDate.value is "" when empty; you currently stor
 Rendering performance (minor): renderTasks() wipes and rebuilds the full list on any change. For small lists it’s fine; for bigger lists you could update only the changed item (or at least build into a DocumentFragment before appending).
 
 Consistency: add the missing semicolon after let currentFilter = "all" (you’re mostly using semicolons elsewhere).
+
+## Caso de modificacion de estructura de ficheros del proyecto con cambio de archivos y variables
+
+![Cursor](./images/Screenshot-13.png)
+---
+
+![Cursor](./images/Screenshot-14.png)
+---
+
+![Cursor](./images/Screenshot-15.png)
+---
+
+![Cursor](./images/Screenshot-16.png)
+---
+
+![Cursor](./images/Screenshot-17.png)
+---
+
+## Añadido de estructura de validaciones/confirmaciones adicionales , con uso de omentarios segun formato requerido
+
+```JS
+
+window.TaskFlow = window.TaskFlow || {};
+
+const els = window.TaskFlow.els;
+const state = window.TaskFlow.state;
+const saveTasks = window.TaskFlow.saveTasks;
+
+let pendingDeleteId = null;
+
+const confirmDeleteAvailable = Boolean(
+  els &&
+    els.confirmDeleteModal &&
+    els.confirmDeleteText &&
+    els.confirmDeleteCancelBtn &&
+    els.confirmDeleteOkBtn
+);
+
+/**
+ * Show validation feedback.
+ * If the details modal is open, write into it; otherwise fall back to alert().
+ * @param {string} message
+ */
+function showUserError(message) {
+  if (els && els.modal && !els.modal.classList.contains("hidden")) {
+    els.modalHint.textContent = message;
+    els.modal.classList.add("highlight");
+    return;
+  }
+  alert(message);
+}
+```
+
+## Ejemplo  concreto de simplificacion de funcion 
+
+```JS
+window.TaskFlow.loadTasks = function loadTasks() {
+  try {
+    const data = localStorage.getItem("tasks");
+    if (data) {
+      window.TaskFlow.state.tasks = JSON.parse(data);
+    }
+  } catch (e) {
+    console.error("Error loading tasks:", e);
+    window.TaskFlow.state.tasks = [];
+  }
+};
+
+```
