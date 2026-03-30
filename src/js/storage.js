@@ -4,10 +4,15 @@
  */
 window.TaskFlow = window.TaskFlow || {};
 window.TaskFlow.saveTasks = function saveTasks() {
-  localStorage.setItem(
-    "tasks",
-    JSON.stringify(window.TaskFlow.state.tasks)
-  );
+  try {
+    localStorage.setItem(
+      "tasks",
+      JSON.stringify(window.TaskFlow.state.tasks)
+    );
+  } catch (e) {
+    // localStorage may be blocked on file:// or by tracking prevention.
+    console.warn("TaskFlow: saveTasks failed (storage blocked).", e);
+  }
 };
 
 /**

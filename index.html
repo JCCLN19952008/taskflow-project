@@ -151,7 +151,14 @@
 <script src="src/js/storage.js"></script>
 <script src="src/js/tasks_classic.js"></script>
 <script src="src/js/main.js"></script>
-<script src="app.js"></script>
+<script>
+  window.TaskFlow = window.TaskFlow || {};
+  if (typeof window.TaskFlow.init === "function") {
+    window.TaskFlow.init();
+  } else {
+    console.warn("TaskFlow: init() not found.");
+  }
+</script>
 <script>
   if (window.lucide && typeof window.lucide.createIcons === "function") {
     window.lucide.createIcons();
