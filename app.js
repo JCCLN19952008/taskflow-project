@@ -1,3 +1,8 @@
+import("./src/js/main.js");
+
+import("./src/js/main.js");
+
+/*
 // Manipular elementos del DOM
 
 const els = {
@@ -241,4 +246,5 @@ if (savedMode === "true") {
 setIcon(document.body.classList.contains("dark-mode"));
 
 loadTasks();
-renderTasks();   
+renderTasks();    
+*/
