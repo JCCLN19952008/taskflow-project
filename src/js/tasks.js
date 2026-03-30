@@ -2,7 +2,14 @@ import { els } from "./dom.js";
 import { state } from "./state.js";
 import { saveTasks } from "./storage.js";
 
-// Crear tarea (mantiene la misma lógica que tu `app.js` actual).
+/**
+ * Create a new task (or open the details modal for duplicates without a date).
+ *
+ * @param {string} title
+ * @param {string} [category]
+ * @param {string|null} [date]
+ * @returns {void}
+ */
 export function createTask(title, category = "personal", date = null) {
   const exists = state.tasks.some(
     (t) =>
@@ -35,7 +42,10 @@ export function createTask(title, category = "personal", date = null) {
   renderTasks();
 }
 
-// Funcionalidad de estadisticas
+/**
+ * Update counters in the stats section based on current `state.tasks`.
+ * @returns {void}
+ */
 export function updateStats() {
   els.taskCount.textContent = `${state.tasks.length} tareas`;
 
@@ -48,21 +58,19 @@ export function updateStats() {
   els.pendingTasks.textContent = pending;
 }
 
-// Renderizar las tareas creadas
+/**
+ * Re-render the task list based on the current filter (`state.currentFilter`).
+ * @returns {void}
+ */
 export function renderTasks() {
   els.taskList.innerHTML = "";
 
-  // 1. START from real state
-  let filtered = [...state.tasks];
+  const filtered = state.tasks.filter((task) => {
+    if (state.currentFilter === "completed") return task.completed;
+    if (state.currentFilter === "pending") return !task.completed;
+    return true; // "all"
+  });
 
-  // 2. APPLY filter FIRST
-  if (state.currentFilter === "completed") {
-    filtered = filtered.filter((t) => t.completed);
-  } else if (state.currentFilter === "pending") {
-    filtered = filtered.filter((t) => !t.completed);
-  }
-
-  // 3. HANDLE EMPTY STATE AFTER filtering
   if (filtered.length === 0) {
     els.taskList.innerHTML = `
       <div class="empty-state">
@@ -74,8 +82,9 @@ export function renderTasks() {
     return;
   }
 
-  // 4. RENDER CLEANLY
-  filtered.forEach((task) => {
+  const fragment = document.createDocumentFragment();
+
+  for (const task of filtered) {
     const clone = els.taskTemplate.content.cloneNode(true);
 
     const checkbox = clone.querySelector(".task-checkbox");
@@ -84,12 +93,7 @@ export function renderTasks() {
     const deleteBtn = clone.querySelector(".delete-task");
 
     title.textContent = task.title;
-
-    let metaText = task.category;
-    if (task.date) {
-      metaText += ` - ${task.date}`;
-    }
-    meta.textContent = metaText;
+    meta.textContent = `${task.category}${task.date ? ` - ${task.date}` : ""}`;
 
     checkbox.checked = task.completed;
 
@@ -108,9 +112,10 @@ export function renderTasks() {
       renderTasks();
     });
 
-    els.taskList.appendChild(clone);
-  });
+    fragment.appendChild(clone);
+  }
 
+  els.taskList.appendChild(fragment);
   updateStats();
 }
 

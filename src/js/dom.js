@@ -1,4 +1,7 @@
-// Centralized DOM references so the rest of the code doesn't repeat selectors.
+/**
+ * Centralized DOM references so the rest of the code doesn't repeat selectors.
+ * Keys are kept stable to avoid breaking the logic modules.
+ */
 export const els = {
   taskForm: document.getElementById("taskform"),
   taskInput: document.getElementById("task-input"),

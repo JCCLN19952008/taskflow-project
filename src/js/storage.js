@@ -1,11 +1,18 @@
 import { state } from "./state.js";
 
-// Persist tasks to localStorage.
+/**
+ * Persist tasks to `localStorage`.
+ * @returns {void}
+ */
 export function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(state.tasks));
 }
 
-// Load tasks from localStorage (or start fresh if parsing fails).
+/**
+ * Load tasks from `localStorage`.
+ * If parsing fails, it falls back to an empty array.
+ * @returns {void}
+ */
 export function loadTasks() {
   try {
     const data = localStorage.getItem("tasks");

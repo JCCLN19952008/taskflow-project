@@ -3,6 +3,11 @@ import { state } from "./state.js";
 import { loadTasks } from "./storage.js";
 import { createTask, renderTasks } from "./tasks.js";
 
+/**
+ * Application entry point.
+ * Wires DOM events to task logic and initializes state from localStorage.
+ */
+
 // Keep modal highlight animation cleanup.
 els.modal.addEventListener("animationend", () => {
   els.modal.classList.remove("highlight");
