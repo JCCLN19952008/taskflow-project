@@ -139,9 +139,26 @@ export function renderTasks() {
         return;
       }
 
+      if (!confirmDeleteAvailable) {
+        // Fallback for pages that don't have the custom confirm modal markup.
+        const ok = window.confirm(
+          `¿Eliminar la tarea "${task.title}"${
+            task.date ? ` (fecha: ${task.date})` : ""
+          }?`
+        );
+        if (!ok) return;
+
+        state.tasks = state.tasks.filter((t) => t.id !== task.id);
+        saveTasks();
+        renderTasks();
+        return;
+      }
+
       pendingDeleteId = task.id;
       els.confirmDeleteText.textContent =
-        `¿Eliminar la tarea "${task.title}"${task.date ? ` (fecha: ${task.date})` : ""}?`;
+        `¿Eliminar la tarea "${task.title}"${
+          task.date ? ` (fecha: ${task.date})` : ""
+        }?`;
       els.confirmDeleteModal.classList.remove("hidden");
     });
 
@@ -153,6 +170,13 @@ export function renderTasks() {
 }
 
 let pendingDeleteId = null;
+const confirmDeleteAvailable =
+  Boolean(
+    els.confirmDeleteModal &&
+      els.confirmDeleteText &&
+      els.confirmDeleteCancelBtn &&
+      els.confirmDeleteOkBtn
+  );
 
 function showUserError(message) {
   // If the details modal is visible, show feedback in the modal.
@@ -164,20 +188,22 @@ function showUserError(message) {
   alert(message);
 }
 
-// Wire confirm-delete modal once for the whole module.
-els.confirmDeleteCancelBtn.addEventListener("click", () => {
-  pendingDeleteId = null;
-  els.confirmDeleteModal.classList.add("hidden");
-});
+// Wire confirm-delete modal once for the whole module (if it exists in the HTML).
+if (confirmDeleteAvailable) {
+  els.confirmDeleteCancelBtn.addEventListener("click", () => {
+    pendingDeleteId = null;
+    els.confirmDeleteModal.classList.add("hidden");
+  });
 
-els.confirmDeleteOkBtn.addEventListener("click", () => {
-  if (pendingDeleteId == null) return;
+  els.confirmDeleteOkBtn.addEventListener("click", () => {
+    if (pendingDeleteId == null) return;
 
-  state.tasks = state.tasks.filter((t) => t.id !== pendingDeleteId);
-  pendingDeleteId = null;
-  els.confirmDeleteModal.classList.add("hidden");
+    state.tasks = state.tasks.filter((t) => t.id !== pendingDeleteId);
+    pendingDeleteId = null;
+    els.confirmDeleteModal.classList.add("hidden");
 
-  saveTasks();
-  renderTasks();
-});
+    saveTasks();
+    renderTasks();
+  });
+}
 

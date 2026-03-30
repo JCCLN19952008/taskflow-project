@@ -147,7 +147,10 @@
 
 </div>
 <script type="module" src="app.js"></script>
-<script>lucide.createIcons();
+<script>
+  if (window.lucide && typeof window.lucide.createIcons === "function") {
+    window.lucide.createIcons();
+  }
 </script>
 </body>
 </html>
