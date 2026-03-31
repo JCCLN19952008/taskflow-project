@@ -1,6 +1,6 @@
-# Configurando el MCP Server 
+# Experimentos varios
 
-## Instrucciones de instalacion 
+## Instrucciones de instalacion del MCP Server
 
 **Response**
 
@@ -52,10 +52,8 @@ Mention you restarted Cursor
 
 Mention you verified the filesystem MCP tool in Tools & MCP
 
-Paste the 5 prompts + short outputs (or screenshots) from Cursor
 
-
-## Instalado del FileSystem MCP Server dentro de la estrcutura del proyecto.
+## Instalando del FileSystem MCP Server dentro de la estructura del proyecto
 
 ```json
 {
@@ -74,6 +72,7 @@ Paste the 5 prompts + short outputs (or screenshots) from Cursor
 ## Consulta sobre conocimiento del contexto del proyecto
 
 **Query 1**
+
 Prompt:
 “Use the MCP filesystem to read index.html and tell me which scripts it loads at the end.”
 
@@ -81,6 +80,7 @@ Result:
 The scripts from src/js were listed, along with the initialisation of window.TaskFlow.
 
 **Query 2**
+
 Prompt:
 “Use the MCP filesystem to read src/js/storage.js and summarise the save/load logic.”
 
@@ -88,6 +88,7 @@ Result:
 saveTasks() and loadTasks() were explained using localStorage, including error handling for storage lockouts.
 
 **Query 3**
+
 Prompt:
 “Using the MCP filesystem, list the IDs expected by src/js/dom.js and verify that they exist in index.html.”
 
@@ -95,6 +96,7 @@ Result:
 The required DOM elements (form, modal, stats, buttons, etc.) and their corresponding HTML elements were identified.
 
 **Query 4**
+
 Prompt:
 “Using the MCP filesystem, review src/js/tasks_classic.js and list the validations for createTask.”
 
@@ -102,6 +104,7 @@ Result:
 Validations for title length, job category with mandatory date, and duplicate checks were identified.
 
 **Query 5**
+
 Prompt:
 “Use MCP filesystem to read src/js/main.js and explain the initialisation flow.”
 
@@ -139,14 +142,14 @@ If needed, toggle it on.
 
 ## Utilizando Claude para shot-prompting y contexto
 
-# Preguntas con contexto de rol previo 
+### Preguntas con contexto de rol previo
 
 **PROMPT**
+
 Hey Claude, just piggybacking on this same project we were working on a few days back , if  you had to take the role of Senior Engineer for a software project and you had this @app.js file in your project but you realised its role is unnecessary considering two other files files in the @src/js folder, how would you approach getting rid of the app.js  as it is no longer of value ? No need to modify anything for the time being , just check the docs involved and come up with a reasoning and solution.
 
-
-
 **RESPUESTA**
+
 What Each File Is Actually Doing
 
 tasks_classic.js is the task logic module. It reads els, state, and saveTasks from window.TaskFlow (expecting them to already exist), then defines and exposes createTask, renderTasks, and updateStats back onto window.TaskFlow.
@@ -156,8 +159,11 @@ app.js is where the problem lives — and it's actually two things awkwardly mer
 The Core Problem With app.js
 
 The file has a split personality. In its first section it contains four nearly identical IIFE blocks that all just call window.TaskFlow.init() — clearly leftover from multiple rounds of copy-pasting during development. That alone is messy but not fatal.
+
 The real issue is the second half of the file, which is a complete standalone reimplementation of the entire app — els, state, saveTasks, loadTasks, createTask, renderTasks, updateStats, setIcon, and all the event wiring — all defined as plain global variables and functions, completely bypassing the window.TaskFlow namespace that tasks_classic.js and main.js were built around.
+
 This means right now the app is almost certainly running twice — once from the modular system (tasks_classic.js + main.js) and once from the monolithic block inside app.js. It also means tasks_classic.js is probably never actually used, because app.js redefines everything it provides before it gets a chance to matter.
+
 Also worth flagging — main.js itself has window.TaskFlow.init defined four times in full, which is the same copy-paste issue.
 
 The Reasoning Behind What Happened
@@ -165,6 +171,7 @@ The Reasoning Behind What Happened
 This is a very recognisable pattern in student and junior projects. The app was almost certainly written first as a single flat file (what app.js essentially is), and then later refactored into the modular structure of tasks_classic.js and main.js. But the original monolithic file was never cleanly removed — it just kept accumulating copies of itself alongside the new structure.
 
 The Solution I'd Propose
+
 Rather than deleting app.js outright, I'd replace it with a minimal bootstrap file — which is actually the role it should have been playing all along. Its only job should be:
 
 Define window.TaskFlow.els — the DOM element references
@@ -174,10 +181,11 @@ Call window.TaskFlow.init() once — the single IIFE that main.js expects
 
 Everything else currently in app.js — the duplicate function definitions, the duplicate event wiring, the four repeated IIFEs — gets deleted entirely.
 The load order in index.html should then be: app.js (bootstrap/namespace setup) → tasks_classic.js (task logic) → main.js (UI wiring and init call). Each file has one clear responsibility and none of them duplicate each other.
+
 I'd also clean up main.js at the same time since having init defined four times is the same underlying problem — only the last definition would actually take effect, which means the first three are just dead code creating confusion.
 
 
-## Pregunta step-by-step sobre error de implementacion de Cursor
+### Pregunta step-by-step sobre error de implementacion de funcion por parte de Cursor
 
 **PROMPT**
 
@@ -209,7 +217,7 @@ The short version is: the other AI was a fast executor but a poor diagnostician.
 
 ## Version comparativa Codigo generado propio a codigo generado por Aistente IA .
 
-Para este ejemplo trate de generar las funciones tipicas que tenia que cincluir en el proyecto al principio de comenzarlo ,suponiendo que pudiera hacerlo completamente sin asistentem como no podia ser de otra manera gran parte de las funciones y loops terminaban crasheando o sin comporatarse como debian, la version corregida y solucioinada por parte de IA , sin ser la implementada en el proyecto real luego desarrollado en gran medida en la rama main , fnciona sin erroers logicos.
+Para este ejemplo trate de generar las funciones tipicas que tenia que cincluir en el proyecto al principio de comenzarlo ,suponiendo que pudiera hacerlo completamente sin asistente como no podia ser de otra manera gran parte de las funciones y loops terminaban crasheando o sin comporatarse como debian, la version corregida y solucionada por parte de la IA, sin ser la implementada en el luego desarrollado en gran medida en la rama main , funciona sin errores logicos.
 
 **Intentos**
 
@@ -338,4 +346,7 @@ function deleteTask(id) {
     renderTasks();
 }
 ```
-La IA ofrece soluciones a esas funciones erroneamente escritas empleando metodos y recursos mas propios de de profesionales con experiencia que conocen los metodos dispoinbles para usar en cada contexto y no recurrir a codigo demsaido cpmplejo o enrevesado con loops innecesarios.Por otro lado la gancnia en tiempo es abismal ,por cada funcion simple de las mas arribas escritas al principio del proyecto pude estar alrededor de dos horas y medias por cada una recurriendoa diversas fuentes de internet no relacionadas con asistentes IA , con el resutlado expuesto ; con IA en menos de de 2 minutos el resultado mostrado es el logrado.
+---
+---
+
+La IA ofrece soluciones a esas funciones erroneamente escritas empleando metodos y recursos mas propios de de profesionales con experiencia que conocen los metodos dispoinbles para usar en cada contexto y no recurrir a codigo demasiado  enrevesado con loops innecesarios.Por otro lado la ganancia entiempo es absimal ,por cada funcion simple de las mas arribas descritas al principio del proyecto pude estar alrededor de dos horas y media por cada una recurriedno a diversas fuentes de internet no relacionadas con asistentes IA, con el resultado expuesto.Con el uso de Asistente IA el resultado expuesto es el logrado en menos de 2 minutos en total para la generacion de este codigo.

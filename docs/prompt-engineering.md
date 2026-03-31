@@ -36,4 +36,7 @@
 
  5- As you will see in the js files alongside the html and css files, this project contains some validations and inputs required from the user in order to let some specific tasks be created/deleted  depending on date, etc. Most of these validations were done to make the user experience more streamlined, is it possible to introduce some additional validations or confirmation requiring input from the user to any of the functions now contained in the ./src files that might also require the html and css files to be modified to better reflect that behaviours required from the users?
 
+ ---
+ ---
  
+ Estos son los prompts empleados por mi con mayor frecuencia , tanto para cuestines generalees en programacion como cuando se trata del contexto en el que desarrollo la app que nos ocupa.

@@ -1,8 +1,6 @@
 # Capabilidades y uso de la Herramienta/IDE CURSOR
 
-
-
-## Casos de Uso
+## Imagenes con el fin de ilustrar los cambios introducidos por parte de Cursor 
 
 ![Cursor](./images/Screenshot-1.png)
 ---
@@ -42,7 +40,6 @@
 ---
 
 ![Cursor](./images/Screenshot-13.png)
-
 
 ---
 ---
@@ -296,7 +293,7 @@ renderTasks();
 
 ```
 
-La funcionalidad de la app es exactamente la misma apero se añade una clase extra "els" con el fin de añadir consistencia y facilitar la agrupacion de variables en el DOM sin que parezca que son de aparicion espontanea.
+La funcionalidad de la app es exactamente la misma pero se añade una clase extra "els" con el fin de añadir consistencia y facilitar la agrupacion de variables en el DOM sin que parezca que son de aparicion espontanea.
 
 ## Prompt y respuesta  sugiriendo sobre la posibilidad de mejorar aspectos especificos de la programaicion de la app
 
@@ -385,3 +382,7 @@ window.TaskFlow.loadTasks = function loadTasks() {
 };
 
 ```
+
+---
+
+Esta es la coparativa relaizada entre los dosasitentes de IA no integrados en IDE .

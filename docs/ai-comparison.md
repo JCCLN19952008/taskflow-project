@@ -140,7 +140,9 @@ Then:
 Same data across devices 
 
 ### Prompt Claude Sonnet (4.6 Extended: Free Tier)
+
 At the moment there are a few things i would like to know a little bit more about , it is mostly centered around concepts so not really antyhign code specific itself itself , concetps that i am currently struggling with would be things like:
+
 -The different design patterns when developing a Windows app(MVP,MVVM, etc) and where they are apprpriate to implement them.
 -How does deployment of an app difers from hosting the app in your local machie and running it .
 What "build" really means when running and debugging an app for the first time and how it is different from clicking on "run" outright.
@@ -151,24 +153,43 @@ What does localstorage mean in regards to persistence and its play with using di
 Great set of questions — and they're all very practically useful, not just academic. Let me walk through each one.
 
 **Patrones de Diseño**
+
 Design Patterns: MVP, MVVM, MVC etc.
+
 These are all ways of separating concerns in your app — basically, keeping your UI code, your logic, and your data from getting tangled together into one messy blob.
-MVC (Model-View-Controller) is the oldest and most foundational. The Model holds your data, the View displays it, and the Controller sits in between handling user input and updating both. It works well for web apps (ASP.NET MVC, for example) but in desktop/Windows apps the Controller can get awkward because the View and Controller end up very tightly coupled.
-MVP (Model-View-Presenter) is MVC's evolution for desktop apps (think WinForms). The Presenter replaces the Controller, but crucially the View is now "dumb" — it does nothing except display what it's told and pass user events to the Presenter. All the logic lives in the Presenter. This makes it very testable. You'd use MVP when working with WinForms or older-style Windows apps where you don't have data binding.
-MVVM (Model-View-ViewModel) is what modern Windows development uses, especially WPF and XAML-based apps. The ViewModel exposes data in a way that the View can bind to directly — meaning the UI updates automatically when the data changes, without you writing manual "update the label" code. This is the go-to for any WPF, UWP, or MAUI project. It's a bit harder to grasp at first but extremely powerful once it clicks.
+
+-MVC (Model-View-Controller) is the oldest and most foundational. The Model holds your data, the View displays it, and the Controller sits in between handling user input and updating both. It works well for web apps (ASP.NET MVC, for example) but in desktop/Windows apps the Controller can get awkward because the View and Controller end up very tightly coupled.
+
+-MVP (Model-View-Presenter) is MVC's evolution for desktop apps (think WinForms). The Presenter replaces the Controller, but crucially the View is now "dumb" — it does nothing except display what it's told and pass user events to the Presenter. All the logic lives in the Presenter. This makes it very testable. You'd use MVP when working with WinForms or older-style Windows apps where you don't have data binding.
+
+-MVVM (Model-View-ViewModel) is what modern Windows development uses, especially WPF and XAML-based apps. The ViewModel exposes data in a way that the View can bind to directly — meaning the UI updates automatically when the data changes, without you writing manual "update the label" code. This is the go-to for any WPF, UWP, or MAUI project. It's a bit harder to grasp at first but extremely powerful once it clicks.
+
 The short rule of thumb: WinForms → MVP, WPF/MAUI/XAML → MVVM, Web (ASP.NET) → MVC.
+
 **Despliegue vs Ejecución en local**
+
 When you run an app on your local machine, everything it needs — the runtime, the files, the database — lives on your computer. Only you can access it, and if you close your laptop, it stops existing for everyone.
+
 Deployment means packaging your app and putting it somewhere else — a server, a cloud platform (like Azure, AWS, or a web host) — so that other people can reach it over the internet, and it runs independently of your machine. You also have to think about things you never worried about locally: environment variables for secrets, a proper database that isn't just a local file, HTTPS certificates, scaling if lots of people use it at once, and keeping it running 24/7.
+
 Think of it like cooking at home vs. opening a restaurant. At home you just cook. In a restaurant you need hygiene standards, stock management, staff, and the food has to be consistent every time for every customer.
+
 **Concepto de "build"**
+
 This one confuses a lot of people because IDEs like Visual Studio blur the steps together.
+
 Building is the process of taking your human-readable source code and compiling it into something the computer can actually execute — in C# that's a .exe or .dll file made of bytecode. The build step also checks for errors, links all your references together, and produces the output files. If your code has a syntax error or a missing reference, the build fails and you never even get to run anything.
+
 Running is simply executing that already-built output. When you hit the "Run" or "Start" button in Visual Studio, it actually does both steps in sequence — it builds first, then runs the result. The reason this matters is that if you make a code change and try to run, it rebuilds first. If you just want to check whether your code compiles without launching the whole app, you can hit Build (Ctrl+Shift+B) on its own, which is much faster for catching errors early.
+
 Debugging (F5 in Visual Studio) does the same thing but also attaches the debugger so you can use breakpoints, inspect variables, and step through code line by line.
+
 **Concepto de "LocalStorage" y de "Persistence"**
+
 LocalStorage is a small storage area that lives inside your browser, tied to a specific website. When a website saves something to LocalStorage (like your preferences, a login token, or a dark mode setting), it's written into that browser's storage on that computer's hard drive.
+
 This has a few important implications. First, it persists between sessions — if you close the tab and reopen it, the data is still there, unlike memory which disappears the moment you close the tab. Second, it is completely local — it has nothing to do with a server or a database. If you clear your browser data, it's gone. If you open the same website in Chrome, the LocalStorage is completely separate from what Firefox sees, even on the same machine. And if you log into a different computer entirely, LocalStorage on that machine starts empty — none of your data followed you.
+
 This is why LocalStorage is fine for small, non-critical, device-specific things (like "this user prefers dark mode") but is completely the wrong tool if you need data to follow the user across devices or browsers — for that you need a proper backend database tied to a user account.
 
 ## Segundos prompts preguntando por feedback para mejorar los prompts y respuestas 
@@ -193,6 +214,7 @@ A strong prompt usually includes:
 **Patrones de Diseño**
 
 Improved version
+
 Explain the MVP and MVVM design patterns in the context of application development. 
 Compare their structure, responsibilities, and typical use cases, and explain when one would be preferred over the other in a real-world application (e.g., a task management app). 
 Include a simple conceptual example for each.
@@ -206,8 +228,10 @@ Why this is better
 **Despliegue vs Ejecución en local**
 
 Improved version
+
 Explain the difference between running an application locally and deploying it to a production environment. 
 Include differences in infrastructure, accessibility, environment configuration, and reliability. 
+
 Also explain what changes (if any) a developer needs to make when moving from local development to deployment.
 
 Why this works better
@@ -218,6 +242,7 @@ Why this works better
 **Concepto de "build"**
 
 Improved version
+
 Explain what the “build” process means in software development, especially in modern JavaScript applications. 
 Compare it with “running” and “debugging” an application, and describe what happens under the hood during each step. 
 Include a practical example (e.g., a web app using a framework).
@@ -230,6 +255,7 @@ Improvement
 **Concepto de "LocalStorage" y de "Persistence"**
 
 Improved version
+
 Explain how localStorage works in terms of data persistence in web applications. 
 Clarify its limitations regarding scope (browser, device, domain), and compare it with using a backend database in terms of scalability and real-world usage. 
 Include an example of how this affects a task management app.
@@ -240,6 +266,7 @@ Improvement
 ✔ Adds constraints (scope, limitations)
 
 GOLD STANDARD PROMPT (you can reuse this everywhere)
+
 Explain concept in a way suitable for a junior developer. 
 Include:
 - a clear definition
@@ -267,9 +294,11 @@ I like the responses fair enough indeed  and now i have got a little bit of a be
 ### Respuesta Claude Sonnet (4.6 Extended: Free Tier)
 
 Great meta-question — and honestly, learning how to ask good questions is a skill that will serve you well beyond just AI tools, in Stack Overflow, in team environments, everywhere.
+
 Let me go through each of your original questions and show you a sharper version, then explain the principles behind why it works better.
 
 The General Principles First
+
 A good question to an AI (or anyone, really) tends to include:
 
 Your context — who you are and what you already know
@@ -280,6 +309,7 @@ Constraints — keep it simple, use analogies, avoid jargon, give code examples,
 **Patrones de Diseño**
 
 Your Questions, Rephrased
+
 Original: "The different design patterns when developing a Windows app (MVP, MVVM, etc) and where they are appropriate to implement them."
 Sharper version:
 
@@ -382,6 +412,7 @@ MVP → you call render manually
 MVVM → UI reacts to state change
 
 **Despliegue vs Ejecución en local**
+
 Local (your machine)
 ```JS
 fetch("http://localhost:xxxx/api/tasks")
@@ -403,6 +434,7 @@ Same code
 Different environment
 
 **Concepto de "build"**
+
 Run(Execute code)
 ```JS
 console.log("App is running");
@@ -453,6 +485,7 @@ if (stored) {
 }
 ```
 Important limitation
+
 Open another browser:
 ```JS
 localStorage.getItem("tasks");
@@ -493,6 +526,7 @@ Can you come up with  pretty easy to read examples to help me contextualize a li
 Sure! I'll keep each example short, heavily commented, and focused on illustrating the concept rather than being production-ready code.
 
 **Patrones de Diseño**
+
 MVP vs MVVM in C#
 
 MVP (think WinForms style)
@@ -662,6 +696,7 @@ string connectionString = Configuration.GetConnectionString("DefaultConnection")
 The app code is identical — only the config file changes. This is the core idea behind environment-based configuration.
 
 **Concepto de "build"**
+
 What the compiler actually produces
 ```CS
 // This is YOUR source code - human readable, the compiler's input
@@ -675,6 +710,7 @@ public class Calculator
 ```
 
 When you **Build**, Visual Studio runs the C# compiler (csc.exe) on this and produces a `.exe` or `.dll` file. You can actually see these in your project folder under `bin/Debug/`. That file is what the computer actually runs — not your `.cs` file.
+
 ```CS
 // What happens at each button press in Visual Studio:
 
@@ -706,6 +742,7 @@ public int Add(int a, int b)
 }
 ```
 **Concepto de "LocalStorage" y de "Persistence"**
+
 JavaScript in the browser
 ```JS
 // ---- SAVING to LocalStorage ----
@@ -778,11 +815,15 @@ fetch("/api/user/preferences", {
 ```
 The pattern you'll notice across all four is that the concept and the code are really just the same idea expressed in two different languages — once the analogy clicked, the code is just spelling it out formally. Let me know if any of these you'd like to push further!
 
+---
+---
+---
 # Comparacion entre asistentes en cuanto a deteccion de errores en codigo
 
 ## Prompts de funciones erroneas a  Chat-GPT Go(GPT 5.3)
 
 **Primera Funcion Erronea**
+
 ```JS
 First JS function :
 const taskList = document.getElementById("tasks");
@@ -792,6 +833,7 @@ function saveTasks() {
 }
 ```
 **Segunda funcion erronea**
+
 ```JS
 const taskList = document.getElementById("tasks");
 let tasks = [];
@@ -808,6 +850,7 @@ function loadTasks() {
 }
 ```
 **Tercera funcion erronea**
+
 ```JS
 const taskList = document.getElementById("tasks");
 let tasks = [];
@@ -821,6 +864,7 @@ function createTask(title, category = "personal", date = null) {
 ## Respuesta a las  funciones erroneas por Chat-GPT Go(GPT 5.3)
 
 **Primera Funcion Corregida**
+
 ```JS
 const taskList = document.getElementById("tasks");
 let tasks = [];
@@ -836,6 +880,7 @@ case sensitivity (JSON)
 remembering exact Web API names (setItem)
 
 **Segunda funcion Corregida**
+
 ```JS
 const taskList = document.getElementById("tasks");
 let tasks = [];
@@ -863,6 +908,7 @@ The important one:
 Data type consistency is critical (array vs object)
 
 **Tercera funcion Corregida**
+
 ```JS
 function createTask(title, category = "personal", date = null) {
 
@@ -893,6 +939,7 @@ tasks.some(task => ...)
 ## Prompts de funcines erroneas a  Claude Sonnet (4.6 Extended: Free Tier)
 
 **Primera Funcion Erronea**
+
 ```JS
 First JS function :
 const taskList = document.getElementById("tasks");
@@ -902,6 +949,7 @@ function saveTasks() {
 }
 ```
 **Segunda funcion erronea**
+
 ```JS
 const taskList = document.getElementById("tasks");
 let tasks = [];
@@ -918,6 +966,7 @@ function loadTasks() {
 }
 ```
 **Tercera funcion erronea**
+
 ```JS
 const taskList = document.getElementById("tasks");
 let tasks = [];
@@ -931,6 +980,7 @@ function createTask(title, category = "personal", date = null) {
 ## Respuesta a las  funciones erroneas por Claude Sonnet (4.6 Extended: Free Tier)
 
 **Primera Funcion Corregida**
+
 ```JS
 let tasks = []; // consistent with the other functions
 
@@ -946,6 +996,7 @@ Bug 3 — tasks initialised as {} (object) instead of [] (array)
 Functions 2 and 3 both treat tasks as an array. This inconsistency would cause subtle bugs when trying to use array methods like .some() or .push() on what is actually an object.
 
 **Segunda funcion Corregida**
+
 ```JS
 function loadTasks() {
     try {
@@ -967,6 +1018,7 @@ Bug 3 — resetting to {} instead of [] in the catch block
 If loading fails, tasks gets reset to an object instead of an empty array, which would break any array methods used later.
 
 **Tercera funcion Corregida**
+
 ```JS
 function createTask(title, category = "personal", date = null) {
     // 'task' is singular - represents one item from the array
@@ -1000,11 +1052,15 @@ Because of Bug 1, both sides of the comparison refer to the same callback parame
 Bug 3 — the function is incomplete
 It checks for duplicates but never actually creates a task object or adds it to the array.
 
+---
+---
+
 # Comparacion entre asistentes en cuanto a generacion de codigo simple para funciones
 
 ## Prompt de funciones requeridas a  Chat-GPT Go(GPT 5.3)
 
 Next i will explain to you in pretty simple natural language three easy features that i would like you to generate in rather simple code , the features will be in natural language so the code will be pretty self-contained all things considered.
+
 The set of functions i want you to generate in code that may involve implementing a feature in and all task planner apps are : 
 
 1.A function that does not allow to create a task if the date that task is supposed to be done is set on a weekend. 
@@ -1016,6 +1072,7 @@ The set of functions i want you to generate in code that may involve implementin
 ## Generacion de funciones requeridas a  Chat-GPT Go(GPT 5.3)
 
 **Primera Funcion**
+
 Block Weekend Dates
 ```JS
 function isWeekend(dateString) {
@@ -1035,6 +1092,7 @@ if (isWeekend("2026-03-28")) {
 ```
 
 **Segunda Funcion**
+
 Remove duplicate task in same week
 ```JS
 function removeDuplicateTask(tasks, newTask) {
@@ -1059,6 +1117,7 @@ tasks.push(newTask);
 ```
 
 **Tercera Funcion**
+
 Validate Task test
 ```JS
 function isValidTaskText(title) {
@@ -1100,6 +1159,7 @@ All three functions are:
 ## Prompt de funciones requeridas a  Claude Sonnet (4.6 Extended: Free Tier)
 
 Next i will explain to you in pretty simple natural language three easy features that i would like you to generate in rather simple code , the features will be in natural language so the code will be pretty self-contained all things considered.
+
 The set of functions i want you to generate in code that may involve implementing a feature in and all task planner apps are : 
 
 1.A function that does not allow to create a task if the date that task is supposed to be done is set on a weekend. 
@@ -1113,6 +1173,7 @@ The set of functions i want you to generate in code that may involve implementin
 Great set of features — they're all realistic, practical additions to any task planner. Let me build each one cleanly with clear comments so you can see the reasoning behind every step.
 
 **Primera Funcion**
+
 Block weekend dates
 ```JS
 function isWeekend(date) {
@@ -1149,6 +1210,7 @@ function createTask(title, category = "personal", date = null) {
 What's happening: getDay() returns a number 0-6 representing the day of the week. We just check if it lands on 0 (Sunday) or 6 (Saturday) and block it if so. Clean and simple.
 
 **Segunda Funcion**
+
 Auto-delete same week duplicate
 ```JS
 // Helper that figures out which week number a date falls in
@@ -1209,6 +1271,7 @@ function createTask(title, category = "personal", date = null) {
 What's happening: We calculate the week number for both the new task and any existing task with the same name. If they match, splice() removes the old one from the array before the new one gets added. We also check the year so week 1 of 2025 doesn't clash with week 1 of 2026.
 
 **Tercera Funcion**
+
 Validate english syntax and capitalization
 ```JS
 function isValidTaskTitle(title) {
@@ -1306,3 +1369,5 @@ function createTask(title, category = "personal", date = null) {
 }
 ```
 The three gates sit neatly in sequence — validate the title, validate the date, handle duplicates, then and only then create and save. Let me know if you'd like any of these adjusted or pushed further!
+
+---
