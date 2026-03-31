@@ -1,5 +1,7 @@
 # Capabilidades y uso de la Herramienta/IDE CURSOR
 
+
+
 ## Casos de Uso
 
 ![Cursor](./images/Screenshot-1.png)
@@ -294,7 +296,7 @@ renderTasks();
 
 ```
 
-La funcionalidad de la app es exactamente la mims apero se añade una clase extra "els" con el fin de añadir consistencia y facilitar la agrupacion de variables en el DOM sin que parezca que son de aparicion espontanea.
+La funcionalidad de la app es exactamente la misma apero se añade una clase extra "els" con el fin de añadir consistencia y facilitar la agrupacion de variables en el DOM sin que parezca que son de aparicion espontanea.
 
 ## Prompt y respuesta  sugiriendo sobre la posibilidad de mejorar aspectos especificos de la programaicion de la app
 
