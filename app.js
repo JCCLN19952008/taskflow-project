@@ -3,6 +3,8 @@
 const taskForm = document.getElementById("taskform");
 const taskInput = document.getElementById("task-input");
 const taskList = document.getElementById("tasks");
+const searchInput = document.getElementById("searchInput");
+let searchQuery = "";
 
 const totalTasks = document.getElementById("total-tasks");
 const completedTasks = document.getElementById("completed-tasks");
@@ -85,6 +87,12 @@ function renderTasks() {
 
   // 1. START from real state
   let filtered = [...tasks];
+
+  if (searchQuery) {
+  filtered = filtered.filter(t =>
+    t.title.toLowerCase().includes(searchQuery)
+  );
+}
 
   // 2. APPLY filter FIRST
   if (currentFilter === "completed") {
@@ -206,6 +214,11 @@ taskForm.addEventListener("submit", (e) => {
 
   createTask(title);
   taskInput.value = "";
+});
+
+searchInput.addEventListener("input", (e) => {
+  searchQuery = e.target.value.toLowerCase();
+  renderTasks();
 });
 
 const darkToggle = document.getElementById("darkModeToggle");
