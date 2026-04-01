@@ -9,6 +9,8 @@ let searchQuery = "";
 const totalTasks = document.getElementById("total-tasks");
 const completedTasks = document.getElementById("completed-tasks");
 const pendingTasks = document.getElementById("pending-tasks");
+const selectAllCheckbox = document.getElementById("selectAll");
+const deleteSelectedBtn = document.getEelementById("deleteSelectedBtn")
 
 const modal = document.getElementById("taskModal");
 const openModalBtn = document.getElementById("openModal");
@@ -220,6 +222,49 @@ searchInput.addEventListener("input", (e) => {
   searchQuery = e.target.value.toLowerCase();
   renderTasks();
 });
+
+selectAllCheckbox.addEventListener("change", () => {
+  const isChecked = selectAllCheckbox.checked;
+
+  let visibleTasks = [...tasks];
+
+  if (searchQuery) {
+    visibleTasks = visibleTasks.filter(t =>
+      t.title.toLowerCase().includes(searchQuery)
+    );
+  }
+
+  if (currentFilter === "completed") {
+    visibleTasks = visibleTasks.filter(t => t.completed);
+  } else if (currentFilter === "pending") {
+    visibleTasks = visibleTasks.filter(t => !t.completed);
+  }
+
+  visibleTasks.forEach(task => {
+    task.completed = isChecked;
+  });
+
+  saveTasks();
+  renderTasks();
+});
+
+deleteSelectedBtn.addEventListener("click", () => {
+  const selectedTasks = tasks.filter(t => t.completed);
+
+  if (selectedTasks.length === 0) {
+    alert("No hay tareas seleccionadas.");
+    return;
+  }
+
+  const confirmDelete = confirm("¿Eliminar tareas seleccionadas?");
+  if (!confirmDelete) return;
+
+  tasks = tasks.filter(t => !t.completed);
+
+  saveTasks();
+  renderTasks();
+});
+
 
 const darkToggle = document.getElementById("darkModeToggle");
 
