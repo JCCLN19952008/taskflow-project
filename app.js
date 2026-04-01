@@ -2,6 +2,7 @@
 
 const taskForm = document.getElementById("taskform");
 const taskInput = document.getElementById("task-input");
+const taskCategorySelect = document.getElementById("task-category");
 const taskList = document.getElementById("tasks");
 const searchInput = document.getElementById("searchInput");
 let searchQuery = "";
@@ -130,7 +131,12 @@ function renderTasks() {
     if (task.date) {
       metaText += ` - ${task.date}`;
     }
-    meta.textContent = metaText;
+    meta.innerHTML = `
+  <span class="category ${task.category}">
+    ${task.category}
+  </span>
+  ${task.date ? ` - ${task.date}` : ""}
+`;
 
     checkbox.checked = task.completed;
 
@@ -212,9 +218,12 @@ taskForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
   const title = taskInput.value.trim();
+  const category = taskCategorySelect.value;
+
   if (!title) return;
 
-  createTask(title);
+  createTask(title, category);
+
   taskInput.value = "";
 });
 
