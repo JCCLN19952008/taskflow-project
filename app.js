@@ -10,7 +10,7 @@ const totalTasks = document.getElementById("total-tasks");
 const completedTasks = document.getElementById("completed-tasks");
 const pendingTasks = document.getElementById("pending-tasks");
 const selectAllCheckbox = document.getElementById("selectAll");
-const deleteSelectedBtn = document.getEelementById("deleteSelectedBtn")
+const deleteSelectedBtn = document.getElementById("deleteSelectedBtn")
 
 const modal = document.getElementById("taskModal");
 const openModalBtn = document.getElementById("openModal");
