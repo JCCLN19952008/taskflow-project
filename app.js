@@ -28,7 +28,8 @@ const modalDate = document.getElementById("modalTaskDate");
 const taskTemplate = document.getElementById("task-template");
 
 let tasks = [];
-let currentFilter = "all"
+let currentFilter = "all";
+let currentCategory = "all";
 
 //Almacenar la tarea
 function saveTasks() {
@@ -104,6 +105,10 @@ function renderTasks() {
     filtered = filtered.filter(t => !t.completed);
   }
 
+  if (currentCategory !== "all") {
+  filtered = filtered.filter(t => t.category === currentCategory);
+}
+
   // 3. HANDLE EMPTY STATE AFTER filtering
   if (filtered.length === 0) {
     taskList.innerHTML = `
@@ -169,6 +174,18 @@ document.querySelectorAll("[data-filter]").forEach(btn => {
     btn.classList.add("active-filter");
 
     currentFilter = btn.dataset.filter;
+    renderTasks();
+  });
+});
+document.querySelectorAll("[data-category]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("[data-category]").forEach(b =>
+      b.classList.remove("active-filter")
+    );
+
+    btn.classList.add("active-filter");
+
+    currentCategory = btn.dataset.category;
     renderTasks();
   });
 });
@@ -248,6 +265,9 @@ selectAllCheckbox.addEventListener("change", () => {
   } else if (currentFilter === "pending") {
     visibleTasks = visibleTasks.filter(t => !t.completed);
   }
+  if (currentCategory !== "all") {
+  visibleTasks = visibleTasks.filter(t => t.category === currentCategory);
+}
 
   visibleTasks.forEach(task => {
     task.completed = isChecked;

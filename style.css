@@ -245,23 +245,29 @@ font-weight: 600;
 
 /* Categorias segun la tarea */
 .category {
+  display: inline-block;         
   font-size: 12px;
-  padding: 2px 8px;
+  padding: 4px 10px;          
   border-radius: 999px;
-  margin-left: 6px;
+  margin-top: 4px;
+  text-align: center;
+  line-height: 1;
 }
 
 /* Different category colors */
 .category.personal {
-  background: #dbeafe;
+  background: #fde68a;
+  color: #1e3a8a;
 }
 
 .category.trabajo {
   background: #fde68a;
+  color: #1e3a8a;
 }
 
 .category.otros {
-  background: #e5e7eb;
+  background: #fde68a;
+  color: #1e3a8a;
 }
 
 /* Panel que muestra la estadisticas de las tareas  */
