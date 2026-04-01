@@ -122,8 +122,8 @@ button:hover {
 
 .filters {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .filter-group {
