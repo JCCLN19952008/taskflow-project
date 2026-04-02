@@ -50,25 +50,28 @@
     <option value="trabajo">Trabajo</option>
     <option value="otros">Otros</option>
   </select>
-      <button type="submit">Añadir</button>
-      <button type="button" id="openModal">Detalles</button>
+      <button type="submit" class="btn-add">Añadir</button>
+      <button type="button" id="openModal" class="btn-details">Detalles</button>
     </form>
   </section>
 
   <!-- 🔹 FILTERS -->
   <section class="card filters">
+    <div class="filters-row">
     <div class="filter-group">
       <span>Estado:</span>
       <button data-filter="all">Todas</button>
       <button data-filter="pending">Pendientes</button>
       <button data-filter="completed">Completadas</button>
     </div>
+
     <div class="filter-group category-filter">
   <span>Categoría:</span>
   <button data-category="all">Todas</button>
   <button data-category="personal">Personal</button>
   <button data-category="trabajo">Trabajo</button>
   <button data-category="otros">Otros</button>
+</div>
 </div>
   </section>
 

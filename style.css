@@ -120,10 +120,31 @@ button:hover {
   opacity: 0.8;
 }
 
+.btn-add {
+  background: #69a453;
+}
+
+.btn-add:hover {
+  background: #222;
+}
+
+.btn-details {
+  background: #85a772;
+}
+
+.btn-details:hover {
+  background: #222;
+}
 .filters {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+.filters-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .filter-group {
@@ -138,6 +159,14 @@ font-weight: 600;
 
 .filter-group button {
   background: #444;
+}
+
+.category-filter button {
+  background: #666;
+}
+
+.category-filter button:hover {
+  background: #222;
 }
 
 .filter-group button:hover {
@@ -405,4 +434,46 @@ footer {
 
 .dark-toggle:hover {
   background: #555;
+}
+
+@media (max-width: 600px) {
+
+  /* Filters stack */
+  .filters-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  /* Form becomes vertical */
+  .task-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #task-input,
+  #task-category {
+    width: 100%;
+  }
+
+  .task-form button {
+    width: 100%;
+  }
+
+  /* Task actions stack */
+  .task-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  /* Reduce container padding */
+  .app-container {
+    padding: 15px;
+  }
+
+  /* Prevent overflow */
+  body {
+    padding: 10px;
+  }
 }
