@@ -144,13 +144,16 @@ button:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: 100%;
 }
 
 .filter-group {
   display: flex;
   gap: 8px;
   align-items: center;
+}
+.category-filter{
+margin-left: auto;
 }
 .filter-group span {
 color: #222;
@@ -160,9 +163,19 @@ font-weight: 600;
 .filter-group button {
   background: #444;
 }
+.filter-group button {
+  padding: 4px 8px;
+  font-size: 13px;
+  border-radius: 6px ;
+}
 
 .category-filter button {
   background: #666;
+}
+.category-group button {
+  padding: 4px 8px;
+  font-size: 13px;
+  border-radius: 6px ;
 }
 
 .category-filter button:hover {
