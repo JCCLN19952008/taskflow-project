@@ -141,8 +141,6 @@ button:hover {
   gap: 10px;
 }
 .filters-row {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
   flex-wrap: 100%;
 }
@@ -152,8 +150,8 @@ button:hover {
   gap: 8px;
   align-items: center;
 }
-.category-filter{
-margin-left: auto;
+.category-filter {
+  justify-content: flex-end;
 }
 .filter-group span {
 color: #222;
