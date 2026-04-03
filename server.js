@@ -13,8 +13,11 @@ app.get("/api/tasks", (req, res) => {
 });
 
 app.post("/api/tasks", (req, res) => {
-  tasks.push(req.body);
-  res.json({ success: true });
+  const task = req.body;
+
+  tasks.push(task);
+
+  res.json(task);
 });
 
 app.delete("/api/tasks", (req, res) => {

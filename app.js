@@ -36,24 +36,28 @@ function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-function loadTasks() {
+async function loadTasks() {
   try {
-    const data = localStorage.getItem("tasks");
-    if (data) {
-      tasks = JSON.parse(data);
-    }
-  } catch (e) {
-    console.error("Error loading tasks:", e);
+    const res = await fetch("/api/tasks");
+    tasks = await res.json();
+
+    tasks = tasks.filter(t => t && t.title);
+    
+    renderTasks();
+    updateStats();
+  } catch (error) {
+    console.error("Error loading tasks:", error);
     tasks = [];
   }
 }
 
 // Crear tarea
-function createTask(title, category = "personal", date = null) {
+async function createTask(title, category = "personal", date = null) {
 
   const exists = tasks.some(t =>
-    t.title.toLowerCase() === title.toLowerCase() &&
-    (!t.date || t.date === date)
+  t && t.title && 
+  t.title.toLowerCase() === title.toLowerCase() &&
+  (!t.date || t.date === date)
   );
 
   // 🔴 If duplicate WITHOUT date → open modal instead
@@ -79,9 +83,28 @@ function createTask(title, category = "personal", date = null) {
     completed: false
   };
 
-  tasks.push(task);
-  saveTasks();
-  renderTasks();
+  await saveTaskToBackend(task);
+}
+
+async function saveTaskToBackend(task) {
+  try {
+    const res = await fetch("/api/tasks", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(task)
+    });
+
+    const newTask = await res.json();
+
+    tasks.push(newTask);
+    renderTasks();
+    updateStats();
+
+  } catch (error) {
+    console.error("Error saving task:", error);
+  }
 }
 
 // Renderizar las  tareas creadas
@@ -231,7 +254,7 @@ function updateStats() {
 
 //Formulario
 
-taskForm.addEventListener("submit", (e) => {
+taskForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const title = taskInput.value.trim();
@@ -239,7 +262,7 @@ taskForm.addEventListener("submit", (e) => {
 
   if (!title) return;
 
-  createTask(title, category);
+  await createTask(title, category);
 
   taskInput.value = "";
 });
@@ -324,5 +347,6 @@ if (savedMode === "true") {
 // Set correct icon on load
 setIcon(document.body.classList.contains("dark-mode"));
 
-loadTasks();
-renderTasks();   
+(async () => {
+  await loadTasks();
+})();   
