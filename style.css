@@ -89,6 +89,10 @@ main {
   margin-bottom: 20px;
 box-shadow: 0 4px 12px rgba(0,0,0,0.04)
 }
+.category-card {
+  background: #ffffffab;
+  border: 1px solid #eee;
+}
 
 /* Aspecto del formulario */
 
@@ -140,9 +144,8 @@ button:hover {
   flex-direction: column;
   gap: 10px;
 }
-.filters-row {
-  align-items: center;
-  flex-wrap: 100%;
+.category-card {
+  margin-top : 5px;
 }
 
 .filter-group {
@@ -151,7 +154,7 @@ button:hover {
   align-items: center;
 }
 .category-filter {
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 .filter-group span {
 color: #222;
@@ -170,11 +173,7 @@ font-weight: 600;
 .category-filter button {
   background: #666;
 }
-.category-group button {
-  padding: 4px 8px;
-  font-size: 13px;
-  border-radius: 6px ;
-}
+
 
 .category-filter button:hover {
   background: #222;
