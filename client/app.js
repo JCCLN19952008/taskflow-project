@@ -35,7 +35,7 @@ let currentCategory = "all";
 
 async function loadTasks() {
   try {
-    const res = await fetch("/api/tasks");
+    const res = await fetch("/api/v1/tasks");
     tasks = await res.json();
 
     tasks = tasks.filter(t => t && t.title);
@@ -85,7 +85,7 @@ async function createTask(title, category = "personal", date = null) {
 
 async function saveTaskToBackend(task) {
   try {
-    const res = await fetch("/api/tasks", {
+    const res = await fetch("/api/v1/tasks", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -169,7 +169,7 @@ checkbox.addEventListener("change", async () => {
 
   renderTasks();
 
-  await fetch(`/api/tasks/${task.id}`, {
+  await fetch(`/api/v1/tasks/${task.id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ completed: task.completed })
@@ -181,7 +181,7 @@ checkbox.addEventListener("change", async () => {
   const confirmDelete = confirm("¿Quieres eliminar esta tarea?");
   if (!confirmDelete) return;
 
-  await fetch(`/api/tasks/${task.id}`, { method: "DELETE" });
+  await fetch(`/api/v1/tasks/${task.id}`, { method: "DELETE" });
 
   tasks = tasks.filter(t => t.id !== task.id);
   renderTasks();
@@ -301,7 +301,7 @@ selectAllCheckbox.addEventListener("change", async () => {
 
   // Sync each change to backend
   await Promise.all(visibleTasks.map(task =>
-    fetch(`/api/tasks/${task.id}`, {
+    fetch(`/api/v1/tasks/${task.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ completed: task.completed })
@@ -322,7 +322,7 @@ deleteSelectedBtn.addEventListener("click", async () => {
   const confirmDelete = confirm("¿Eliminar tareas seleccionadas?");
   if (!confirmDelete) return;
 
-  await fetch("/api/tasks", { method: "DELETE" });
+  await fetch("/api/v1/tasks", { method: "DELETE" });
 
   tasks = tasks.filter(t => !t.completed);
   renderTasks();
