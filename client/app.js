@@ -1,3 +1,5 @@
+import { fetchTasks, postTask, patchTask, deleteTask, deleteCompletedTasks } from "./src/api/client.js";
+
 // Manipular elementos del DOM
 
 const taskForm = document.getElementById("taskform");
@@ -32,18 +34,30 @@ let currentFilter = "all";
 let currentCategory = "all";
 
 
+function showStatus(type, message) {
+  const status = document.getElementById("network-status");
+  status.className = type;
+  status.textContent = message;
+  status.classList.remove("hidden");
 
-async function loadTasks() {
+  if (type !== "loading") {
+    setTimeout(() => {
+      status.classList.add("hidden");
+    }, 3000);
+  }
+}
+
+async function loadTasks()  {
+  showStatus("loading", "Cargando tareas...");
   try {
-    const res = await fetch("/api/v1/tasks");
-    tasks = await res.json();
-
+    tasks = await fetchTasks();
     tasks = tasks.filter(t => t && t.title);
-    
+    showStatus("success", "Tareas cargadas");
     renderTasks();
     updateStats();
   } catch (error) {
     console.error("Error loading tasks:", error);
+    showStatus("error", "Error al cargar las tareas");
     tasks = [];
   }
 }
@@ -84,23 +98,16 @@ async function createTask(title, category = "personal", date = null) {
 }
 
 async function saveTaskToBackend(task) {
+  showStatus("loading", "Guardando tarea...");
   try {
-    const res = await fetch("/api/v1/tasks", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(task)
-    });
-
-    const newTask = await res.json();
-
+    const newTask = await postTask(task);
     tasks.push(newTask);
+    showStatus("success", "Tarea guardada");
     renderTasks();
     updateStats();
-
   } catch (error) {
     console.error("Error saving task:", error);
+    showStatus("error", "Error al guardar la tarea");
   }
 }
 
@@ -166,22 +173,16 @@ function renderTasks() {
 
 checkbox.addEventListener("change", async () => {
   task.completed = checkbox.checked;
-
-  renderTasks();
-
-  await fetch(`/api/v1/tasks/${task.id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ completed: task.completed })
-  });
-    });
+   renderTasks();
+  await patchTask(task.id, { completed: task.completed });
+});
 
 
   deleteBtn.addEventListener("click", async () => {
   const confirmDelete = confirm("¿Quieres eliminar esta tarea?");
   if (!confirmDelete) return;
 
-  await fetch(`/api/v1/tasks/${task.id}`, { method: "DELETE" });
+  await deleteTask(task.id);
 
   tasks = tasks.filter(t => t.id !== task.id);
   renderTasks();
@@ -301,12 +302,8 @@ selectAllCheckbox.addEventListener("change", async () => {
 
   // Sync each change to backend
   await Promise.all(visibleTasks.map(task =>
-    fetch(`/api/v1/tasks/${task.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ completed: task.completed })
-    })
-  ));
+  patchTask(task.id, { completed: task.completed })
+));
 
   renderTasks();
 });
@@ -322,7 +319,7 @@ deleteSelectedBtn.addEventListener("click", async () => {
   const confirmDelete = confirm("¿Eliminar tareas seleccionadas?");
   if (!confirmDelete) return;
 
-  await fetch("/api/v1/tasks", { method: "DELETE" });
+  await deleteCompletedTasks();
 
   tasks = tasks.filter(t => !t.completed);
   renderTasks();

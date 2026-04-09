@@ -94,6 +94,29 @@ box-shadow: 0 4px 12px rgba(0,0,0,0.04)
   border: 1px solid #eee;
 }
 
+#network-status {
+  padding: 10px 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  text-align: center;
+}
+
+#network-status.loading {
+  background: #dfd4d47f;
+  color: #1a56db;
+}
+
+#network-status.error {
+  background: #dfd4d47f;
+  color: #b91c1c;
+}
+
+#network-status.success {
+  background: #dfd4d47f;
+  color: #166534;
+}
+
 /* Aspecto del formulario */
 
 .task-form {
