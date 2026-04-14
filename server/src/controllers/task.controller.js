@@ -1,61 +1,60 @@
-const { tasks, saveTasks } = require("../data/tasks")
+const Task = require("../models/task.model");
 
-const getTasks = (req, res) => {
+const getTasks = async (req, res) => {
   try {
-    res.json(tasks.list);
+    const tasks = await Task.find();
+    res.json(tasks);
   } catch (error) {
     res.status(500).json({ error: "No se pudieron cargar las tareas" });
   }
 };
 
-const createTask = (req, res) => {
+const createTask = async (req, res) => {
   try {
     const task = req.body;
     if (!task || !task.title) {
       return res.status(400).json({ error: "La tarea no tiene título" });
     }
-    tasks.list.push(task);
-    saveTasks();
-    res.status(201).json(task);
+    const newTask = await Task.create(task);
+    res.status(201).json(newTask);
   } catch (error) {
     res.status(500).json({ error: "No se pudo crear la tarea" });
   }
 };
 
-const updateTask = (req, res) => {
+const updateTask = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    const task = tasks.list.find(t => t.id === id);
+    const task = await Task.findOneAndUpdate(
+      { id },
+      { completed: req.body.completed },
+      { new: true }
+    );
     if (!task) return res.status(404).json({ error: "Tarea no encontrada" });
-    task.completed = req.body.completed;
-    saveTasks();
     res.json(task);
   } catch (error) {
     res.status(500).json({ error: "No se pudo actualizar la tarea" });
   }
 };
 
-const deleteTask = (req, res) => {
+const deleteTask = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    const exists = tasks.list.find(t => t.id === id);
-    if (!exists) return res.status(404).json({ error: "Tarea no encontrada" });
-    tasks.list = tasks.list.filter(t => t.id !== id);
-    saveTasks();
+    const task = await Task.findOneAndDelete({ id });
+    if (!task) return res.status(404).json({ error: "Tarea no encontrada" });
     res.status(204).send();
   } catch (error) {
     res.status(500).json({ error: "No se pudo eliminar la tarea" });
   }
 };
 
-const deleteCompleted = (req, res) => {
+const deleteCompleted = async (req, res) => {
   try {
-    tasks.list = tasks.list.filter(t => !t.completed);
-    saveTasks();
+    await Task.deleteMany({ completed: true });
     res.status(204).send();
   } catch (error) {
     res.status(500).json({ error: "No se pudieron eliminar las tareas" });
   }
 };
 
-module.exports = { getTasks, createTask, updateTask, deleteTask, deleteCompleted }
+module.exports = { getTasks, createTask, updateTask, deleteTask, deleteCompleted };
