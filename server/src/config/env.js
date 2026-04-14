@@ -1,7 +1,9 @@
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 if (!process.env.PORT) {
-  throw new Error('El puerto no está definido');
+  process.env.PORT = 3000;
 }
 
 if (!process.env.MONGODB_URI) {
