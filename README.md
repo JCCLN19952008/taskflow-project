@@ -3,6 +3,12 @@
 
 Una aplicación web de gestión de tareas desarrollada con JavaScript  en el front-end y que para este caso de uso emplea   Node.js/Express para el back-end .
 
+## Evolucion
+
+La aplicación comenzó como un simple gestor de tareas exclusivamente del lado del cliente que utilizaba localStorage para el almacenamiento persistente. Partiendo de ese punto opte por migrar a una arquitectura full-stack con un backend Express y una base de datos MongoDB Atlas, que se ha desplegado en Vercel como una aplicación sin servidor(server-less).
+
+El frontend se comunica con el backend exclusivamente a través de una capa de red centralizada (client/src/api/client.js) mediante llamadas asíncronas(async) de recuperación. Todos los datos se almacenan en MongoDB Atlas, lo que significa que las tareas se conservan tras los reinicios del servidor y son accesibles desde cualquier dispositivo.
+
 
 ## Estructura de Carpetas
 
@@ -82,7 +88,7 @@ taskflow-project/
 
 **Backend** : Node.js, Express
 
-**Persistence** : JSON file storage
+**Persistence** : MongoDB Atlas
 
 **Dev tools** : Demon , dotenv
 
